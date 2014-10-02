@@ -1,20 +1,26 @@
 package com.example.ndirangu.estiproject;
 
-import com.example.ndirangu.estiproject.AllMenu;
+import com.example.ndirangu.estiproject.Login;
+import com.example.ndirangu.estiproject.MySQLiteHelper;
+import com.example.ndirangu.estiproject.Users;
 import com.example.ndirangu.estiproject.util.SystemUiHider;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import java.io.File;
 
 
 /**
@@ -183,17 +189,41 @@ public class StartfullActivity extends Activity {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        Intent mainIntent=new Intent(StartfullActivity.this,Login.class);
-                        StartfullActivity.this.startActivity(mainIntent);
+                        String database="UserDB";
+                        File file=getApplicationContext().getDatabasePath(database);
+                        boolean db=doesDatabaseExist(file);
+                        if(db==true) {
+                            try {
+                                Intent mainIntent=new Intent(StartfullActivity.this,AllMenu.class);
+                                StartfullActivity.this.startActivity(mainIntent);
 
-                        StartfullActivity.this.finish();
-                        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                                StartfullActivity.this.finish();
+                                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+
+
+                            }catch (Exception e){
+                                Log.d("DATABASE","Unable to find Token");
+                            }
+                        }
+                        else{
+                            Intent mainIntent=new Intent(StartfullActivity.this,Login.class);
+                            StartfullActivity.this.startActivity(mainIntent);
+
+                            StartfullActivity.this.finish();
+                            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+
+                        }
+
 
                     }
                 },DISPLAY_LENGTH);
 
 
             }
+    private static boolean doesDatabaseExist(File file) {
+
+        return file.exists();
+    }
 
 
 

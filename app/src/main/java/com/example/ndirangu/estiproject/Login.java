@@ -1,5 +1,5 @@
 package com.example.ndirangu.estiproject;
-
+import com.example.ndirangu.estiproject.MySQLiteHelper;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,9 +15,14 @@ import com.sromku.simple.fb.Permission;
 import com.sromku.simple.fb.SimpleFacebook;
 import com.sromku.simple.fb.SimpleFacebookConfiguration;
 import com.sromku.simple.fb.entities.Page;
+import com.sromku.simple.fb.entities.Profile;
+import com.sromku.simple.fb.entities.User;
 import com.sromku.simple.fb.listeners.OnActionListener;
 import com.sromku.simple.fb.listeners.OnLoginListener;
+import com.sromku.simple.fb.listeners.OnProfileListener;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -43,7 +48,8 @@ public class Login extends Activity {
     private SimpleFacebook mSimpleFacebook;
     private String TAG="EstiProject";
 
-
+    String Birthday,Email,Username,MusicLikes;
+    int Id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +105,9 @@ requestWindowFeature(Window.FEATURE_ACTION_BAR);
             // change the state of the button or do whatever you want
             Log.i(TAG, "Logged in");
             //Create a database and store users info
+String Token =mSimpleFacebook.getSession().getAccessToken();
+           String musiclike;
+
 
             //Get the music pages a user likes
 
@@ -107,9 +116,27 @@ requestWindowFeature(Window.FEATURE_ACTION_BAR);
                 @Override
                 public void onComplete(List<Page> response) {
                     Log.i(TAG, "Number of music pages I like = " + response.size() );
+                    String MusicLikes=(response.toArray().toString());
+
                 }
 
             });
+
+
+ mSimpleFacebook.getProfile(onProfileListener);
+
+Users user=new Users();
+            user.setBirthday(Birthday);
+            user.setToken(Token);
+            user.setMusicLikes(MusicLikes);
+            user.setEmail(Email);
+        MySQLiteHelper mysqlhelper= new MySQLiteHelper(getApplicationContext());
+            mysqlhelper.AddUser(user);
+
+
+
+
+
             Intent mainIntent=new Intent(Login.this,AllMenu.class);
             Login.this.startActivity(mainIntent);
 
@@ -157,5 +184,20 @@ public void SkipLogin(View view){
         Login.this.finish();
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
+    OnProfileListener onProfileListener = new OnProfileListener() {
+        @Override
+        public void onComplete(Profile profile) {
+            Log.i(TAG, "My profile id = " + profile.getId());
+            Email=profile.getEmail();
+            Birthday=profile.getBirthday();
+            Id=Integer.parseInt(profile.getId());
+            Username=profile.getFirstName();
+        }
+
+    /*
+     * You can override other methods here:
+     * onThinking(), onFail(String reason), onException(Throwable throwable)
+     */
+    };
 
 }

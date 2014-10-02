@@ -98,7 +98,10 @@ requestWindowFeature(Window.FEATURE_ACTION_BAR);
         public void onLogin() {
             // change the state of the button or do whatever you want
             Log.i(TAG, "Logged in");
+            //Create a database and store users info
+
             //Get the music pages a user likes
+
             mSimpleFacebook.get("me", "music", null, new OnActionListener<List<Page>>() {
 
                 @Override

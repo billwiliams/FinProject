@@ -106,7 +106,7 @@ requestWindowFeature(Window.FEATURE_ACTION_BAR);
             Log.i(TAG, "Logged in");
             //Create a database and store users info
 String Token =mSimpleFacebook.getSession().getAccessToken();
-           String musiclike;
+
 
 
             //Get the music pages a user likes
@@ -116,11 +116,26 @@ String Token =mSimpleFacebook.getSession().getAccessToken();
                 @Override
                 public void onComplete(List<Page> response) {
                     Log.i(TAG, "Number of music pages I like = " + response.size() );
-                    String MusicLikes=(response.toArray().toString());
+                     MusicLikes=(response.toArray().toString());
 
                 }
 
             });
+            OnProfileListener onProfileListener = new OnProfileListener() {
+                @Override
+                public void onComplete(Profile profile) {
+                    Log.i(TAG, "My profile id = " + profile.getId());
+                    Email=profile.getEmail();
+                    Birthday=profile.getBirthday();
+                    Id=Integer.parseInt(profile.getId());
+                    Username=profile.getFirstName();
+                }
+
+    /*
+     * You can override other methods here:
+     * onThinking(), onFail(String reason), onException(Throwable throwable)
+     */
+            };
 
 
  mSimpleFacebook.getProfile(onProfileListener);
@@ -184,20 +199,6 @@ public void SkipLogin(View view){
         Login.this.finish();
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
-    OnProfileListener onProfileListener = new OnProfileListener() {
-        @Override
-        public void onComplete(Profile profile) {
-            Log.i(TAG, "My profile id = " + profile.getId());
-            Email=profile.getEmail();
-            Birthday=profile.getBirthday();
-            Id=Integer.parseInt(profile.getId());
-            Username=profile.getFirstName();
-        }
 
-    /*
-     * You can override other methods here:
-     * onThinking(), onFail(String reason), onException(Throwable throwable)
-     */
-    };
 
 }

@@ -2,6 +2,7 @@ package com.example.ndirangu.estiproject;
 
 /**
  * Created by NDIRANGU on 10/2/2014.
+ * database class thats exxtends the sqlite database
  * Helps create a database
  */
 import android.content.ContentValues;
@@ -10,10 +11,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import android.util.Log;
 
-import com.sromku.simple.fb.entities.User;
-import com.sromku.simple.fb.utils.Utils;
 
 public class MySQLiteHelper extends SQLiteOpenHelper {
 
@@ -36,7 +34,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                 "token TEXT, "+
                 "email TEXT"+
                 "musiclikes TEXT"+
-                "user TEXT )";
+                "birthday TEXT )";
 
         // create books table
         db.execSQL(CREATE_USER_TABLE);
@@ -62,15 +60,15 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     private static final String KEY_TOKEN = "token";
     private static final String KEY_EMAIL = "email";
     private static final String KEY_MUSICLIKES = "musiclikes";
-    private static final String KEY_USER_BIRTHDAY = "birthday";
+    private static final String KEY_BIRTHDAY = "birthday";
 
-    private static final String[] COLUMNS = {KEY_ID,KEY_TOKEN,KEY_EMAIL,KEY_MUSICLIKES,KEY_USER_BIRTHDAY};
+    private static final String[] COLUMNS = {KEY_ID,KEY_TOKEN,KEY_EMAIL,KEY_MUSICLIKES,KEY_BIRTHDAY};
     public void AddUser(Users user){
         ContentValues values = new ContentValues();
         values.put(KEY_EMAIL, user.getEmail());
         values.put(KEY_TOKEN, user.getToken());
         values.put(KEY_MUSICLIKES,user.getMusicLikes());
-        values.put(KEY_USER_BIRTHDAY,user.getBirthday());
+        values.put(KEY_BIRTHDAY,user.getBirthday());
 
         SQLiteDatabase db = this.getWritableDatabase();
 

@@ -1,0 +1,4 @@
+include ':app'
+
+include ':libraries:facebook'
+include ':libraries:simplefacebook'

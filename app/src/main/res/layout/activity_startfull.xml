@@ -1,0 +1,60 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ff04cbcc"
+    tools:context=".StartfullActivity">
+
+    <!-- The primary full-screen view. This can be replaced with whatever view
+         is needed to present your content, e.g. VideoView, SurfaceView,
+         TextureView, etc. -->
+    <!-- Show the shopping bag icon at the centre with the names my shopping mate on top-->
+    <ImageView
+        android:layout_gravity="center"
+        android:id="@+id/firstImage"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:src="@drawable/ic_launcher"/>
+    <TextView android:id="@+id/fullscreen_content"
+        android:typeface="serif"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:keepScreenOn="true"
+        android:textColor="#ffdce5e0"
+        android:textStyle="bold|italic"
+        android:textSize="50sp"
+        android:gravity="center"
+        android:text="@string/dummy_content" />
+<!-- A progress bar to show loaded percentage-->
+    <ProgressBar
+        android:id="@+id/startProgressBar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_margin="10dp"
+
+        android:layout_gravity="bottom"
+
+
+        />
+    <!-- This FrameLayout insets its children based on system windows using
+         android:fitsSystemWindows. -->
+    <FrameLayout android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:fitsSystemWindows="true">
+
+        <LinearLayout android:id="@+id/fullscreen_content_controls"
+            style="?metaButtonBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:background="@color/black_overlay"
+            android:orientation="horizontal"
+            tools:ignore="UselessParent">
+
+
+
+        </LinearLayout>
+    </FrameLayout>
+
+</FrameLayout>

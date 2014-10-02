@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.ndirangu.estiproject.AllMenu" >
+
+    <!-- search icon to handle search-->
+    <item android:id="@+id/search"
+        android:title="Search"
+        android:icon="@drawable/ic_action_search"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:actionViewClass="android.widget.SearchView"
+
+        />
+</menu>

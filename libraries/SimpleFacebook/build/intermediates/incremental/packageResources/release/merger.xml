@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="2" >
+
+    <dataSet config="main" >
+        <source path="D:\projects\HelloWorld\EstiProject\libraries\SimpleFacebook\res" >
+            <file
+                path="D:\projects\HelloWorld\EstiProject\libraries\SimpleFacebook\res\values\strings.xml"
+                qualifiers="" >
+                <string name="app_name" >Simple Facebook
+                </string>
+            </file>
+        </source>
+        <source path="D:\projects\HelloWorld\EstiProject\libraries\SimpleFacebook\build\generated\res\rs\release" />
+        <source path="D:\projects\HelloWorld\EstiProject\libraries\SimpleFacebook\build\generated\res\generated\release" />
+    </dataSet>
+    <dataSet config="release" >
+        <source path="D:\projects\HelloWorld\EstiProject\libraries\SimpleFacebook\src\release\res" />
+    </dataSet>
+
+</merger>

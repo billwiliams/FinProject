@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">myshoppingmate</string>
+    <string name="dummy_content">My Shopping Mate</string>
+    <string name="title_activity_menu">Menu</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_all_menu">Our Store</string>
+    <string name="app_id">222412067951023</string>
+    <string name="title_activity_login">Login</string>
+    <string name="title_facebook_login">Facebook My shopping Mate Login</string>
+    <string name="login_app_name">My Shopping Mate</string>
+   <string name="user_education">Shopping is Better\n\n\t With Facebook \n  </string>
+    <string name="sharing">we only share if you tell us to</string>
+    <string name="skip"><u>Skip</u></string>
+
+</resources>

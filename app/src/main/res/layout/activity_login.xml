@@ -1,0 +1,97 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:background="#08C"
+
+    tools:context="com.example.ndirangu.estiproject.Login">
+    <ImageView
+android:id="@+id/loginScreenImage"
+        android:layout_width="32dp"
+        android:layout_height="100dp"
+        android:src="@drawable/ic_launcher"
+        />
+    <TextView
+        android:layout_toRightOf="@+id/loginScreenImage"
+        android:layout_width="fill_parent"
+        android:layout_height="100dp"
+        android:layout_marginTop="34dp"
+        android:layout_marginLeft="20dp"
+        android:textColor="#ff35d5ff"
+
+        android:textAllCaps="true"
+        android:textSize="23dp"
+        android:typeface="sans"
+        android:text="@string/login_app_name"/>
+    <TextView
+        android:id="@+id/usereducation"
+        android:layout_below="@+id/loginScreenImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:typeface="normal"
+        android:textSize="23dp"
+        android:textColor="#ffffffff"
+        android:textAllCaps="true"
+        android:text="@string/user_education"/>
+    <TextView
+        android:id="@+id/sharing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="34dp"
+        android:layout_below="@id/usereducation"
+        android:textSize="20dp"
+        android:textColor="#ffffff"
+        android:typeface="sans"
+        android:textStyle="italic"
+        android:text="@string/sharing"/>
+    <TextView
+        android:layout_below="@id/sharing"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+
+        android:background="#ffdbdbdb"/>
+
+    <Button
+        android:id="@+id/loginButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+       android:layout_alignParentBottom="true"
+      android:text="Login With Facebook"
+
+        android:layout_centerHorizontal="true"
+
+
+
+        android:layout_margin="@dimen/com_facebook_loginview_padding_bottom"
+
+        android:fontFamily="San-serif"
+
+        style="@style/btnStyleAcapulco"
+
+
+       android:onClick="LoginFacebook"/>
+    <Button
+        android:id="@+id/skip"
+        android:layout_above="@id/loginButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        style="@style/btnStyleAcapulco"
+        android:textSize="25dp"
+        android:textStyle="italic"
+
+        android:textIsSelectable="false"
+        android:textColor="#FFFFFF"
+
+
+
+        android:text="@string/skip"
+        android:onClick="SkipLogin"/>
+
+
+</RelativeLayout>

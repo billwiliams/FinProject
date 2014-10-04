@@ -32,8 +32,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         String CREATE_USER_TABLE = "CREATE TABLE Users ( " +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "token TEXT, "+
-                "email TEXT"+
-                "musiclikes TEXT"+
+                "email TEXT ,"+
+                "musiclikes TEXT ,"+
                 "birthday TEXT )";
 
         // create books table
@@ -76,8 +76,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         db.close();
     }
     /*Returns User Token from facebook */
-    public String findUser(String Token){
-        String query = "Select * FROM " + TABLE_USERS+ " WHERE " + KEY_TOKEN + " =  \"" + Token + "\"";
+    public String findUser(String EmailUser){
+        String query = "Select * FROM " + TABLE_USERS+ " WHERE " + KEY_EMAIL + " =  \"" + EmailUser + "\"";
 
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -86,7 +86,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             cursor.moveToFirst();
-            userToken=cursor.getString(1);
+            userToken=cursor.getString(0);
             cursor.close();
         } else {
             userToken = null;

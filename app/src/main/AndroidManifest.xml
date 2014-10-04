@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.INTERNET" />
+
     <!-- Declaration that this app is usable on phones with Bluetooth Low Energy. -->
     <uses-feature
         android:name="android.hardware.bluetooth_le"
@@ -32,7 +33,16 @@
         <activity
             android:name=".AllMenu"
             android:label="@string/title_activity_all_menu" >
-             />
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+
+
+            />
         </activity>
 
         <service
@@ -43,6 +53,13 @@
             android:name=".Login"
             android:label="@string/title_activity_login" >
         </activity>
+        <!-- Search results activity -->
+
+
+
+
+
+
     </application>
 
 </manifest>

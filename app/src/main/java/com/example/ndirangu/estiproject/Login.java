@@ -2,6 +2,7 @@ package com.example.ndirangu.estiproject;
 import com.example.ndirangu.estiproject.MySQLiteHelper;
 import android.app.Activity;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -48,7 +49,7 @@ public class Login extends Activity {
     private SimpleFacebook mSimpleFacebook;
     private String TAG="EstiProject";
 
-    String Birthday,Email,Username,MusicLikes;
+    public  String Birthday,Email,Username,MusicLikes="facebook";
     int Id;
 
     @Override
@@ -115,10 +116,22 @@ String Token =mSimpleFacebook.getSession().getAccessToken();
 
                 @Override
                 public void onComplete(List<Page> response) {
-                    Log.i(TAG, "Number of music pages I like = " + response.size() );
-                     MusicLikes=(response.toArray().toString());
+                    Log.i(TAG, "Number of music pages I like = " + response.size());
+                    if (response.size() > 0) {
+                        MusicLikes=response.get(0).getName();
+                        for (int i = 1; i < response.size(); i++) {
+                            Log.i(TAG, response.get(i).getName());
+                            MusicLikes +=","+response.get(i).getName();
+                        }
 
+                    }
+                    else
+                    {
+                        MusicLikes="Unknown ";
+                    }
+                    Log.i(TAG,MusicLikes);
                 }
+
 
             });
             OnProfileListener onProfileListener = new OnProfileListener() {
@@ -126,9 +139,11 @@ String Token =mSimpleFacebook.getSession().getAccessToken();
                 public void onComplete(Profile profile) {
                     Log.i(TAG, "My profile id = " + profile.getId());
                     Email=profile.getEmail();
+                    Log.i(TAG,Email);
                     Birthday=profile.getBirthday();
                     Id=Integer.parseInt(profile.getId());
                     Username=profile.getFirstName();
+                    Log.i(TAG,Username +Birthday);
                 }
 
     /*

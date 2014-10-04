@@ -14,5 +14,6 @@
    <string name="user_education">Shopping is Better\n\n\t With Facebook \n  </string>
     <string name="sharing">we only share if you tell us to</string>
     <string name="skip"><u>Skip</u></string>
+    <string name="search_hint">Search products</string>
 
 </resources>

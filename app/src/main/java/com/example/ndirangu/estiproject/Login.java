@@ -49,7 +49,7 @@ public class Login extends Activity {
     private SimpleFacebook mSimpleFacebook;
     private String TAG="EstiProject";
 
-    public  String Birthday,Email,Username,MusicLikes="facebook";
+    public  String Birthday,Email,Username,MusicLikes,Token;
     int Id;
 
     @Override
@@ -106,7 +106,7 @@ requestWindowFeature(Window.FEATURE_ACTION_BAR);
             // change the state of the button or do whatever you want
             Log.i(TAG, "Logged in");
             //Create a database and store users info
-String Token =mSimpleFacebook.getSession().getAccessToken();
+ Token =mSimpleFacebook.getSession().getAccessToken();
 
 
 
@@ -134,34 +134,11 @@ String Token =mSimpleFacebook.getSession().getAccessToken();
 
 
             });
-            OnProfileListener onProfileListener = new OnProfileListener() {
-                @Override
-                public void onComplete(Profile profile) {
-                    Log.i(TAG, "My profile id = " + profile.getId());
-                    Email=profile.getEmail();
-                    Log.i(TAG,Email);
-                    Birthday=profile.getBirthday();
-                    Id=Integer.parseInt(profile.getId());
-                    Username=profile.getFirstName();
-                    Log.i(TAG,Username +Birthday);
-                }
-
-    /*
-     * You can override other methods here:
-     * onThinking(), onFail(String reason), onException(Throwable throwable)
-     */
-            };
 
 
- mSimpleFacebook.getProfile(onProfileListener);
 
-Users user=new Users();
-            user.setBirthday(Birthday);
-            user.setToken(Token);
-            user.setMusicLikes(MusicLikes);
-            user.setEmail(Email);
-        MySQLiteHelper mysqlhelper= new MySQLiteHelper(getApplicationContext());
-            mysqlhelper.AddUser(user);
+
+
 
 
 
@@ -174,6 +151,31 @@ Users user=new Users();
             overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
 
         }
+        OnProfileListener onProfileListener = new OnProfileListener() {
+            @Override
+            public void onComplete(Profile profile) {
+                Log.i(TAG, "My profile id = " + profile.getId());
+                Email=profile.getEmail();
+                Log.i(TAG,Email);
+                Birthday=profile.getBirthday();
+                Id=Integer.parseInt(profile.getId());
+                Username=profile.getFirstName();
+                Log.i(TAG,Username +Birthday);
+                Users user=new Users();
+                user.setBirthday(Birthday);
+                user.setToken(Token);
+                user.setMusicLikes(MusicLikes);
+                user.setEmail(Email);
+                MySQLiteHelper mysqlhelper= new MySQLiteHelper(getApplicationContext());
+                mysqlhelper.AddUser(user);
+            }
+
+    /*
+     * You can override other methods here:
+     * onThinking(), onFail(String reason), onException(Throwable throwable)
+     */
+        };
+
 
         @Override
         public void onNotAcceptingPermissions(Permission.Type type) {
@@ -204,6 +206,7 @@ Users user=new Users();
     public void LoginFacebook(View view){
         if(view.getId()==R.id.loginButton){
         mSimpleFacebook.login(onLoginListener);
+
     }}
 public void SkipLogin(View view){
 

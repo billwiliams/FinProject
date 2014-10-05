@@ -86,13 +86,32 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             cursor.moveToFirst();
-            userToken=cursor.getString(0);
+            userToken=cursor.getString(3);
             cursor.close();
         } else {
             userToken = null;
         }
         db.close();
         return userToken;
+    }
+    public String findEmail(){
+        String query = "Select * FROM " + TABLE_USERS+ " WHERE " + KEY_EMAIL + " IS NOT NULL" ;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor cursor = db.rawQuery(query, null);
+        String userToken = new String();
+
+        if (cursor.moveToFirst()) {
+            cursor.moveToFirst();
+            userToken=cursor.getString(2);
+            cursor.close();
+        } else {
+            userToken = null;
+        }
+        db.close();
+        return userToken;
+
     }
 
 }

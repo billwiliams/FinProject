@@ -192,7 +192,7 @@ public class StartfullActivity extends Activity {
                         String database="UserDB";
                         File file=getApplicationContext().getDatabasePath(database);
                         boolean db=doesDatabaseExist(file);
-                        if(db!=true) {
+                        if(db==true) {
                             try {
                                 Intent mainIntent=new Intent(StartfullActivity.this,AllMenu.class);
                                 StartfullActivity.this.startActivity(mainIntent);

@@ -20,11 +20,15 @@ public class AllMenu extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_menu);
 TextView text=(TextView)findViewById(R.id.database);
+//start a new instant of database class mysqlitehelper
         MySQLiteHelper me=new MySQLiteHelper(getApplicationContext());
+        //show the text that the user queries
         txtQuery=(TextView)findViewById(R.id.textquery);
-
-        String emaili=me.findUser("willyndirangu@yahoo.com");
-        Log.i("Database", emaili+"AM done");
+//set the emaili string to the email of the user
+        String emaili=me.findEmail();
+        //display the artists the user likes
+        text.setText(me.findUser(emaili));
+        //handle the search intent
         handleIntent(getIntent());
 
     }

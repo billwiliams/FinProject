@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -11,9 +12,29 @@ import android.view.MenuItem;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.ByteArrayBuffer;
+import org.apache.http.util.EntityUtils;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class AllMenu extends Activity {
     TextView txtQuery;
+    String emaili,Music;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,11 +46,19 @@ TextView text=(TextView)findViewById(R.id.database);
         //show the text that the user queries
         txtQuery=(TextView)findViewById(R.id.textquery);
 //set the emaili string to the email of the user
-        String emaili=me.findEmail();
+         emaili=me.findEmail();
         //display the artists the user likes
+        Music=me.findUser(emaili);
+        Log.i("MUsic",Music);
         text.setText(me.findUser(emaili));
+
+
+
         //handle the search intent
         handleIntent(getIntent());
+        // we are going to use asynctask to prevent network on main thread exception
+        new PostDataAsyncTask().execute();
+
 
     }
 
@@ -87,4 +116,79 @@ TextView text=(TextView)findViewById(R.id.database);
         }
         return super.onOptionsItemSelected(item);
     }
+    public class PostDataAsyncTask extends AsyncTask<String, String, String> {
+
+        protected void onPreExecute() {
+            super.onPreExecute();
+            // do stuff before posting data
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            try {
+
+                // 1 = post text data, 2 = post file
+                int actionChoice = 1;
+
+                // post a text data
+                if(actionChoice==1){
+                    postText();
+                }
+
+                // post a file
+                else{
+
+                }
+
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String lenghtOfFile) {
+            // do stuff after posting data
+        }
+    }
+    private void postText(){
+        try{
+            // url where the data will be posted
+            String postReceiverUrl = "http://music.myshoppingmate.com/post.php";
+            Log.v("PHP", "postURL: " + postReceiverUrl);
+
+            // HttpClient
+            HttpClient httpClient = new DefaultHttpClient();
+
+            // post header
+            HttpPost httpPost = new HttpPost(postReceiverUrl);
+
+            // add your data
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+            nameValuePairs.add(new BasicNameValuePair("music",Music ));
+
+
+            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+            // execute HTTP post request
+            HttpResponse response = httpClient.execute(httpPost);
+            HttpEntity resEntity = response.getEntity();
+
+            if (resEntity != null) {
+
+                String responseStr = EntityUtils.toString(resEntity).trim();
+                Log.v("PHP", "Response: " +  responseStr);
+
+                // you can add an if statement here and do other actions based on the response
+            }
+
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

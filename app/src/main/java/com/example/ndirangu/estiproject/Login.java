@@ -30,11 +30,16 @@ import java.util.List;
 public class Login extends Activity {
     /*Permissions recquired to access usser facebook data*/
     Permission[] permissions = new Permission[] {
+            //get user photos
             Permission.USER_PHOTOS,
+            //get user email
             Permission.EMAIL,
+            //get user actions for music
 
             Permission.USER_ACTIONS_MUSIC,
+            //allow us to post on behalf of the user
             Permission.PUBLISH_ACTION,
+            //get user birthday
             Permission.USER_BIRTHDAY,
             //For facebook user Music
             Permission.USER_LIKES
@@ -55,10 +60,12 @@ public class Login extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //request for actionbar and hide it before loading the activity
 requestWindowFeature(Window.FEATURE_ACTION_BAR);
         getActionBar().hide();
 
         setContentView(R.layout.activity_login);
+        //set the configuration for the facebook login
         SimpleFacebook.setConfiguration(configuration);
 
 
@@ -105,7 +112,8 @@ requestWindowFeature(Window.FEATURE_ACTION_BAR);
         public void onLogin() {
             // change the state of the button or do whatever you want
             Log.i(TAG, "Logged in");
-            //Create a database and store users info
+
+ //get the facebook access token form the current session
  Token =mSimpleFacebook.getSession().getAccessToken();
 
 
@@ -118,15 +126,18 @@ requestWindowFeature(Window.FEATURE_ACTION_BAR);
                 public void onComplete(List<Page> response) {
                     Log.i(TAG, "Number of music pages I like = " + response.size());
                     if (response.size() > 0) {
+                        //populate the Musiclikes with user's artist preferences
                         MusicLikes=response.get(0).getName();
                         for (int i = 1; i < response.size(); i++) {
                             Log.i(TAG, response.get(i).getName());
+                            //populate all artists a user likes
                             MusicLikes +=","+response.get(i).getName();
                         }
 
                     }
                     else
                     {
+                        //else set the music likes to unknown if user doesnt have any likes on artists
                         MusicLikes="Unknown ";
                     }
                     Log.i(TAG,MusicLikes);
@@ -161,11 +172,13 @@ requestWindowFeature(Window.FEATURE_ACTION_BAR);
                 Id=Integer.parseInt(profile.getId());
                 Username=profile.getFirstName();
                 Log.i(TAG,Username +Birthday);
+                //Create a database and store users info
                 Users user=new Users();
                 user.setBirthday(Birthday);
                 user.setToken(Token);
                 user.setMusicLikes(MusicLikes);
                 user.setEmail(Email);
+                //create a new instance of mysqlhelper and add the user to the database
                 MySQLiteHelper mysqlhelper= new MySQLiteHelper(getApplicationContext());
                 mysqlhelper.AddUser(user);
             }
@@ -205,9 +218,11 @@ requestWindowFeature(Window.FEATURE_ACTION_BAR);
     };
     public void LoginFacebook(View view){
         if(view.getId()==R.id.loginButton){
+            //enable facebook login on clicking the login with facebook login button
         mSimpleFacebook.login(onLoginListener);
 
     }}
+    //on clicking the skip login button change the intent to the allmenu class
 public void SkipLogin(View view){
 
 

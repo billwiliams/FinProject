@@ -47,7 +47,7 @@ public class Login extends Activity {
 
     };
     SimpleFacebookConfiguration configuration = new SimpleFacebookConfiguration.Builder()
-            .setAppId("222412067951023")
+            .setAppId("820703371314246")
             .setNamespace("sromkuapp")
             .setPermissions(permissions)
             .build();
@@ -145,6 +145,9 @@ requestWindowFeature(Window.FEATURE_ACTION_BAR);
 
 
             });
+            //allows items to be added to the database failure to which no item will be added to the database
+
+            mSimpleFacebook.getProfile(onProfileListener);
 
 
 
@@ -153,8 +156,7 @@ requestWindowFeature(Window.FEATURE_ACTION_BAR);
 
 
 
-
-
+//start a new intent
             Intent mainIntent=new Intent(Login.this,AllMenu.class);
             Login.this.startActivity(mainIntent);
 
@@ -190,6 +192,7 @@ requestWindowFeature(Window.FEATURE_ACTION_BAR);
         };
 
 
+
         @Override
         public void onNotAcceptingPermissions(Permission.Type type) {
             // user didn't accept READ or WRITE permission
@@ -221,7 +224,9 @@ requestWindowFeature(Window.FEATURE_ACTION_BAR);
             //enable facebook login on clicking the login with facebook login button
         mSimpleFacebook.login(onLoginListener);
 
-    }}
+
+
+        }}
     //on clicking the skip login button change the intent to the allmenu class
 public void SkipLogin(View view){
 

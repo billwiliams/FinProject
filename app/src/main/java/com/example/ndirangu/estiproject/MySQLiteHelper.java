@@ -113,5 +113,23 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         return userToken;
 
     }
+    public String findBirthday(String EmailUser){
+        String query = "Select * FROM " + TABLE_USERS+ " WHERE " + KEY_EMAIL + " =  \"" + EmailUser + "\"";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor cursor = db.rawQuery(query, null);
+        String userToken = new String();
+
+        if (cursor.moveToFirst()) {
+            cursor.moveToFirst();
+            userToken=cursor.getString(4);
+            cursor.close();
+        } else {
+            userToken = null;
+        }
+        db.close();
+        return userToken;
+    }
 
 }

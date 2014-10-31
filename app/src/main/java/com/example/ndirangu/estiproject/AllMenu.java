@@ -1,25 +1,39 @@
 package com.example.ndirangu.estiproject;
 
+import android.app.ActionBar;
 import android.app.Activity;
+
+
+import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
+
+
+import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.SearchView;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -42,50 +56,146 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+
 import static com.example.ndirangu.estiproject.R.id.content_frame;
 
 
-public class AllMenu extends FragmentActivity {
+public class AllMenu extends android.support.v4.app.FragmentActivity implements ActionBar.TabListener {
     TextView txtQuery;
-    String emaili,Music,LoginTime;
-    //Navigation Drawer
-    private String[] mPlanetTitles;
-    private DrawerLayout mDrawerLayout;
+   static  String emaili,Music,LoginTime,userBirthday;
 
-    private CharSequence mTitle;
+    //ActionBar
+    ActionBar bar;
+    //Navigation Drawer
+    private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private CharSequence mDrawerTitle;
+    private CharSequence mTitle;
+   static String[] mPlanetTitles;
+    //Navigation drawer
+
+
+    //SwipeViews
+    ViewPager mViewPager;
+
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_menu);
-        //Navigation Drawer
-        mTitle = mDrawerTitle = getTitle();
-        mPlanetTitles = getResources().getStringArray(R.array.planets_array);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        //ActionBar
+       bar= getActionBar();
+        bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        //Swipe Views
+        CollectionPagerAdapter mCollectionPagerAdapter;
 
-        // Set the adapter for the list view
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_item, mPlanetTitles));
-        // Set the list's click listener
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-        //Navigation drawer
-TextView text=(TextView)findViewById(R.id.database);
+
+        mCollectionPagerAdapter = new CollectionPagerAdapter(
+                getSupportFragmentManager());
+        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager.setAdapter(mCollectionPagerAdapter);
+        mViewPager
+                .setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+
+                    @Override
+
+                    public void onPageSelected(int position) {
+                        bar.setSelectedNavigationItem(position);
+                    }
+
+                });
+        for (int i = 0; i < mCollectionPagerAdapter.getCount(); i++) {
+            bar.addTab(bar.newTab()
+                    .setText(mCollectionPagerAdapter.getPageTitle(i))
+                    .setTabListener(this));
+        }
+
+        //Swipe Views
+        //Items variables from database
+        TextView text=(TextView)findViewById(R.id.database);
 //start a new instant of database class mysqlitehelper
         MySQLiteHelper me=new MySQLiteHelper(getApplicationContext());
         //show the text that the user queries
         txtQuery=(TextView)findViewById(R.id.textquery);
+        try {
 //set the emaili string to the email of the user
-         emaili=me.findEmail();
-        //display the artists the user likes
-        Music=me.findUser(emaili);
-        Log.i("Music",Music);
-        text.setText(me.findUser(emaili));
-        LoginTime=getCurrentTimeStamp();
+            emaili = me.findEmail();
+            //display the artists the user likes
+            Music = me.findUser(emaili);
+            Log.i("Music", Music);
+            text.setText(me.findUser(emaili));
+            userBirthday = me.findBirthday(emaili);
+            LoginTime=getCurrentTimeStamp();
+        }catch (Exception e){
+            emaili="unknown";
+            Music="unknown";
+            userBirthday="unknown";
+        }
+        mPlanetTitles =new String [6];
+        mPlanetTitles[0]="    About Me ";
+        mPlanetTitles[1]="Email: "+emaili;
+        mPlanetTitles[2]="Last entered store: "+LoginTime;
+        mPlanetTitles[3]="My Birthday: "+userBirthday;
+        mPlanetTitles[4]="Cart items:" ;
+        mPlanetTitles[5]="My points";
+
+
+
+
+
+
+
+
+
+        //Item variables from database
+        //Navigation Drawer
+        mTitle = mDrawerTitle = getTitle();
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+
+        // set a custom shadow that overlays the main content when the drawer opens
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+        // set up the drawer's list view with items and click listener
+        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+                R.layout.drawer_list_item, mPlanetTitles));
+        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+        // enable ActionBar app icon to behave as action to toggle nav drawer
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
+
+        // ActionBarDrawerToggle ties together the the proper interactions
+        // between the sliding drawer and the action bar app icon
+        mDrawerToggle = new ActionBarDrawerToggle(
+                this,                  /* host Activity */
+                mDrawerLayout,         /* DrawerLayout object */
+                R.drawable.ic_drawer,  /* nav drawer image to replace 'Up' caret */
+                R.string.drawer_open,  /* "open drawer" description for accessibility */
+                R.string.drawer_close  /* "close drawer" description for accessibility */
+        ) {
+            public void onDrawerClosed(View view) {
+                getActionBar().setTitle(mTitle);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+
+            public void onDrawerOpened(View drawerView) {
+                getActionBar().setTitle(mDrawerTitle);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+        };
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+//if no item is selected
+        if (savedInstanceState == null) {
+
+        }
+        //Navigation Drawer
+
+
+
+        //Navigation drawer
 
 
 
@@ -97,43 +207,66 @@ TextView text=(TextView)findViewById(R.id.database);
 
     }
 
+    public void onTabSelected(ActionBar.Tab tab,FragmentTransaction ft) {
+
+
+        mViewPager.setCurrentItem(tab.getPosition());
+
+    }
+    public void onTabUnselected (ActionBar.Tab tab, FragmentTransaction ft){
+
+
+    }
+    public void onTabReselected (ActionBar.Tab tab,FragmentTransaction ft){
+        mViewPager.setCurrentItem(tab.getPosition());
+    }
+
+
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.all_menu, menu);
 
+
         // Associate searchable configuration with the SearchView
         SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView =
+        final SearchView searchView =
                 (SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setSearchableInfo(
-                searchManager.getSearchableInfo(getComponentName()));
+        if(null!=searchView) {
+            searchView.setSearchableInfo(
+                    searchManager.getSearchableInfo(getComponentName()));
+        }
+        SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
+            public boolean onQueryTextChange(String newText) {
+                // this is your adapter that will be filtered
+                return true;
+            }
+
+            public boolean onQueryTextSubmit(String query) {
+                //Here u can get the value "query" which is entered in the search box.
+                Log.e("String query","" + query);
+                Toast.makeText(AllMenu.this, "your  search  for " +query + "  has been forwarded and you will be notified when in range", Toast.LENGTH_SHORT).show();
+
+                // call your request, do some stuff..
+                searchView.onActionViewCollapsed();  //collapse your ActionView
+                searchView.setQuery("",false);       //clears your query without submit
+
+                // collapse the action view
+
+                return true;
+
+            }
+        };
+        searchView.setOnQueryTextListener(queryTextListener);
 
 
 
         return true;
     }
-    @Override
-    protected void onNewIntent(Intent intent) {
-        setIntent(intent);
-        handleIntent(intent);
-    }
-
-
-
-    //handling intent data
-    private void handleIntent(Intent intent) {
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            String query = intent.getStringExtra(SearchManager.QUERY);
-
-            //txtQuery.setText("Search Query: " + query);
-            Log.i("query is  ",query);
-
-        }
-    }
-
 
 
 
@@ -143,6 +276,14 @@ TextView text=(TextView)findViewById(R.id.database);
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+
+        //Nav Drawer
+        // The action bar home/up action should open or close the drawer.
+        // ActionBarDrawerToggle will take care of this.
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        //Nav Drawer
         int id = item.getItemId();
 
 
@@ -243,41 +384,104 @@ Log.e("Date","couldn't retrieve date" + e);
             return null;
         }
     }
-    /* The click listner for ListView in the navigation drawer */
+
+
+    /* The click listener for ListView in the navigation drawer */
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             selectItem(position);
         }
     }
+
+//for selecting the navigation drawer items
     private void selectItem(int position) {
         // update the main content by replacing fragments
-        Fragment fragment = new PlanetFragment();
-        Bundle args = new Bundle();
-        args.putInt(PlanetFragment.ARG_PLANET_NUMBER, position);
-        fragment.setArguments(args);
 
-        android.support.v4.app.FragmentManager  fragmentManager = getSupportFragmentManager();;
-        android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.content_frame, fragment).commit();
+
+        FragmentManager fragmentManager = getFragmentManager();
+        switch (position){
+
+            case 0:
+            {
+
+                //should redirect to Offers
+
+
+
+            }
+            case 1:
+            {
+                //should redirect to requests
+
+                              break;
+
+            }
+            case 2:
+            {
+                //should redirect to WishList
+
+
+            }
+            case 4:
+            {
+                //should redirect to cart
+
+
+            }
+            case 5:
+            {
+                //should redirect to shopping history
+
+            }
+            case 6:
+            {
+            //should redirect to me
+            }
+            case 7:
+            {
+                //should redirect to premium
+            }
+            default:
+            {
+                //should do nothing
+                break;
+            }
+        }
+
 
         // update selected item and title, then close the drawer
         mDrawerList.setItemChecked(position, true);
-        setTitle(mPlanetTitles[position]);
+        //setTitle(mPlanetTitles[position]);
         mDrawerLayout.closeDrawer(mDrawerList);
     }
+
     @Override
     public void setTitle(CharSequence title) {
         mTitle = title;
         getActionBar().setTitle(mTitle);
     }
-    public static class PlanetFragment extends Fragment {
-        public static final String ARG_PLANET_NUMBER = "planet_number";
 
-        public PlanetFragment() {
-            // Empty constructor required for fragment subclasses
+
+
+    public android.support.v4.app.Fragment getVisibleFragment(){
+       android.support.v4.app.FragmentManager fragmentManager = AllMenu.this.getSupportFragmentManager();
+        List<android.support.v4.app.Fragment> fragments = fragmentManager.getFragments();
+        for(android.support.v4.app.Fragment fragment : fragments){
+            if(fragment != null && fragment.getUserVisibleHint())
+                return (android.support.v4.app.Fragment)fragment;
         }
+        return null;
+    }
+
+    public  void AddtoWishList(View view){
+        Toast.makeText(this,"Added to WishList" ,Toast.LENGTH_SHORT).show();
 
 
-}
+
+
+
+    }
+
+
 }

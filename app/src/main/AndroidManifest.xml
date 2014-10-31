@@ -32,7 +32,6 @@
             <meta-data
                 android:name="com.facebook.sdk.ApplicationId"
                 android:value="@string/app_id" />
-
         </activity>
         <activity
             android:name=".AllMenu"
@@ -44,8 +43,6 @@
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
-
-
             />
         </activity>
 
@@ -58,12 +55,10 @@
             android:label="@string/title_activity_login" >
         </activity>
         <!-- Search results activity -->
-
-
-
-
-
-
+        <activity
+            android:name=".Home"
+            android:label="@string/title_activity_home" >
+        </activity>
     </application>
 
 </manifest>

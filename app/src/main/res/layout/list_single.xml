@@ -18,7 +18,7 @@
             android:id="@+id/wish_list"
             android:layout_width="25dp"
             android:layout_height="65dp"
-            android:src="@drawable/ic_action_favorite"
+            android:src="@drawable/ic_action_heart"
             android:onClick="AddtoWishList"
            android:layout_gravity="right"
             android:layout_alignParentRight="true"

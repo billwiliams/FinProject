@@ -7,13 +7,25 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.SearchManager;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.support.v4.app.ActionBarDrawerToggle;
+
+//ESTIMOTE
+import com.estimote.sdk.Beacon;
+import com.estimote.sdk.BeaconManager;
+import com.estimote.sdk.Region;
+import com.estimote.sdk.Utils;
+
 
 
 import android.support.v4.view.GravityCompat;
@@ -55,12 +67,26 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 import static com.example.ndirangu.estiproject.R.id.content_frame;
 
 
 public class AllMenu extends android.support.v4.app.FragmentActivity implements ActionBar.TabListener {
+    //ESTIMOTE
+    private static final String TAG = AllMenu.class.getSimpleName();
+    private static final String ESTIMOTE_PROXIMITY_UUID = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";
+    private static final Region ALL_ESTIMOTE_BEACONS = new Region("regionId", ESTIMOTE_PROXIMITY_UUID, null, null);
+    private static final int MINOR_FROM_BEACON_ONE=15188;
+    private static final int MINOR_FROM_BEACON_TWO=8346;
+    private static final int MINOR_FROM_BEACON_THREE=83469;
+    private static final int NOTIFICATION_ID = 123;
+    private static final int REQUEST_ENABLE_BT = 1234;
+    private BeaconManager beaconManager;
+    private NotificationManager notificationManager;
+
+    //ESTIMOTE
     TextView txtQuery;
    static  String emaili,Music,LoginTime,userBirthday;
 
@@ -191,18 +217,84 @@ public class AllMenu extends android.support.v4.app.FragmentActivity implements 
         if (savedInstanceState == null) {
 
         }
-        //Navigation Drawer
+        //ESTIMOTE
+
+        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        beaconManager = new BeaconManager(this);
+        // Default values are 5s of scanning and 25s of waiting time to save CPU cycles.
+        // In order for this demo to be more responsive and immediate we lower down those values.
+        beaconManager.setBackgroundScanPeriod(TimeUnit.SECONDS.toMillis(1), 0);
+        beaconManager.setRangingListener(new BeaconManager.RangingListener() {
+
+            @Override
+            public void onBeaconsDiscovered(final Region region, final List<Beacon> beacons) {
+                //onBeaconsDiscovered(region,beacons);
+                try {
+                    Log.d("TAG", (String.valueOf(beacons.get(0).getMinor())));
+                    //if closest beacons is the one whose minor value is given by MINOR_FROM_BEACON_ONE
+                    if (beacons.get(0).getMinor()==MINOR_FROM_BEACON_ONE){
+                        //tasks do to for
+
+                    }
+                    //if closest beacons is the one whose minor value is given by MINOR_FROM_BEACON_TWO
+                    else if(beacons.get(0).getMinor()==MINOR_FROM_BEACON_TWO){
+
+                    }
+                    //if closest beacons is the one whose minor value is given by MINOR_FROM_BEACON_THREE
+                    else if(beacons.get(0).getMinor()==MINOR_FROM_BEACON_THREE){
+
+                    }
+                    //Otherwise do nothing
+                    else{
+
+                    }
+
+                }catch (Exception e){
+                    Log.d(TAG,"couldn't range the beacons" );
+                }
+
+            }
+        });
+        //MONITORING THE REGION THE USER IS IN
+        beaconManager.setMonitoringListener(new BeaconManager.MonitoringListener() {
+            @Override
+            public void onEnteredRegion(final Region region, final List<Beacon> beacons) {
+
+             postNotification("Welcome to the My Shopping Mate where design meets style");
+               /*we are going to use asynctask to prevent network on main thread exception while sending music likes to music.myshoppingmate.com/post.php
+               *when a user enters a region around the shop his data is posted and added to the database ,email,time of visit and Music likes
+               *
+               */
+                new PostDataAsyncTask().execute();
 
 
 
-        //Navigation drawer
+
+
+            }
 
 
 
 
 
-        // we are going to use asynctask to prevent network on main thread exception while sending music likes to music.myshoppingmate.com
-        new PostDataAsyncTask().execute();
+
+
+            @Override
+            public void onExitedRegion (Region region){
+
+                postNotification(" Thanks for shopping with us ");
+            }
+        }
+
+        );
+
+        //ESTIMOTE
+
+
+
+
+
+
 
 
     }
@@ -480,6 +572,87 @@ Log.e("Date","couldn't retrieve date" + e);
 
 
 
+
+    }
+//POSTING NOTIFICATION
+private void postNotification(String msg) {
+    Intent notifyIntent = new Intent(AllMenu.this, AllMenu.class);
+    notifyIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+    PendingIntent pendingIntent = PendingIntent.getActivities(
+            AllMenu.this,
+            0,
+            new Intent[]{notifyIntent},
+            PendingIntent.FLAG_UPDATE_CURRENT);
+    Notification notification = new Notification.Builder(AllMenu.this)
+            .setSmallIcon(R.drawable.ic_launcher)
+            .setContentTitle("My Shopping Mate")
+            .setContentText(msg)
+            .setAutoCancel(true)
+            .setContentIntent(pendingIntent)
+            .build();
+    notification.defaults |= Notification.DEFAULT_SOUND;
+    notification.defaults |= Notification.DEFAULT_LIGHTS;
+    notificationManager.notify(NOTIFICATION_ID, notification);
+
+
+}
+    protected void onStop() {
+        super.onStop();
+        try {
+            beaconManager.stopRanging(ALL_ESTIMOTE_BEACONS);
+            beaconManager.stopMonitoring(ALL_ESTIMOTE_BEACONS);
+        }catch (RemoteException e){
+            Log.e("doesn't matter","Not accessed");
+        }
+    }
+    protected void onResume() {
+        super.onResume();
+
+        notificationManager.cancel(NOTIFICATION_ID);
+        beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
+            @Override
+            public void onServiceReady() {
+                try {
+                    beaconManager.startRanging(ALL_ESTIMOTE_BEACONS);
+                    // beaconManager.startMonitoring(region);
+                } catch (RemoteException e) {
+                    Log.d(TAG, "Error while starting monitoring");
+                }
+            }
+        });
+    }
+    @Override
+    protected void onDestroy() {
+        notificationManager.cancel(NOTIFICATION_ID);
+        beaconManager.disconnect();
+        super.onDestroy();
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // Check if device supports Bluetooth Low Energy.
+        if (!beaconManager.hasBluetooth()) {
+            Toast.makeText(this, "Device does not have Bluetooth Low Energy", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        // If Bluetooth is not enabled, let user enable it.
+        if (!beaconManager.isBluetoothEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        }
+        beaconManager.connect(new BeaconManager.ServiceReadyCallback(){
+            @Override
+            public void onServiceReady(){
+                try{
+                    beaconManager.startRanging(ALL_ESTIMOTE_BEACONS);
+                    beaconManager.startMonitoring(ALL_ESTIMOTE_BEACONS);
+                }catch (RemoteException e){
+                    Log.e("Ranging","cannot start ranging");
+                }
+            }
+        });
 
     }
 

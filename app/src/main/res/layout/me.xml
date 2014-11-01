@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:background="#ffffffff"
+    android:background="@drawable/our_dna"
     >
     <ScrollView
         android:layout_width="match_parent"
@@ -25,7 +25,8 @@ android:id="@+id/me_about"
 
         android:textStyle="bold|italic"
         android:textSize="20.0sp"
-        android:text="@string/me_about"/>
+        android:text="@string/me_about"
+        android:textColor="#FFFFC0"/>
     <ImageView
         android:id="@+id/me_pic"
 android:layout_below="@+id/me_about"
@@ -43,12 +44,14 @@ android:layout_below="@+id/me_about"
         android:layout_marginLeft="2mm"
         android:text="Shoppers"
         android:layout_below="@+id/me_about"
+         android:textColor="#C0FFFF"
          />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textStyle="bold|italic"
         android:textSize="15.0sp"
+        android:textColor="#C0FFFF"
 
         android:text="Information"
         android:layout_alignRight="@+id/me_pic"
@@ -58,9 +61,10 @@ android:layout_below="@+id/me_about"
     android:id="@+id/me_from_db"
     android:layout_below="@+id/me_pic"
     android:layout_width="wrap_content"
-    android:textColor="#ff000000"
+    android:textColor="#C0FFC0"
     android:layout_height="wrap_content"
     android:textSize="15.0sp"
+
     />
 
      </RelativeLayout></ScrollView>

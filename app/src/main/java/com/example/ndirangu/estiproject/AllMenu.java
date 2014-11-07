@@ -15,10 +15,13 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.database.Cursor;
+import android.database.MatrixCursor;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.provider.BaseColumns;
 import android.support.v4.app.ActionBarDrawerToggle;
 
 //ESTIMOTE
@@ -41,10 +44,12 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -67,6 +72,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -99,9 +105,12 @@ public class AllMenu extends android.support.v4.app.FragmentActivity implements 
     private static int PostTask=1;
     //SEARCH
     private static String SearchQuery;
+    private List<String> items = Arrays.asList("Jackets", "Suits", "Shoes","Dresses","Ties");
+    private CursorAdapter mAdapter;
     //SEARCH
     TextView txtQuery;
    static  String emaili,Music,LoginTime,userBirthday;
+
 
     //ActionBar
     ActionBar bar;
@@ -125,6 +134,9 @@ public class AllMenu extends android.support.v4.app.FragmentActivity implements 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_menu);
+        //search suggestions
+
+        //search suggestions
         //ActionBar
        bar= getActionBar();
         bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -390,13 +402,25 @@ public class AllMenu extends android.support.v4.app.FragmentActivity implements 
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         final SearchView searchView =
                 (SearchView) menu.findItem(R.id.search).getActionView();
+
+
         if(null!=searchView) {
+
             searchView.setSearchableInfo(
                     searchManager.getSearchableInfo(getComponentName()));
         }
+
+
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {
                 // this is your adapter that will be filtered
+                loadHistory(newText);
+                searchView.setSuggestionsAdapter(mAdapter);
+
+
+
+
+
                 return true;
             }
 
@@ -419,8 +443,43 @@ public class AllMenu extends android.support.v4.app.FragmentActivity implements 
                 return true;
 
             }
+            public boolean onSuggestionClick(int position) {
+                String suggestion = getSuggestion(position);
+                searchView.setQuery(suggestion, true); // submit query now
+                return true; // replace default search manager behaviour
+            }
+
+            private String getSuggestion(int position) {
+                Cursor cursor = (Cursor) searchView.getSuggestionsAdapter().getItem(
+                        position);
+                String suggest1 = cursor.getString(cursor
+                        .getColumnIndex(SearchManager.SUGGEST_COLUMN_TEXT_1));
+                return suggest1;
+            }
+
+
         };
         searchView.setOnQueryTextListener(queryTextListener);
+        //Search suggestions
+
+
+        searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+            @Override
+            public boolean onSuggestionSelect(int i) {
+                String suggestion = getSuggestion(i);
+                searchView.setQuery(suggestion, true); // submit query now
+                return true; // replace default search manager behaviour
+            }
+
+            @Override
+            public boolean onSuggestionClick(int i) {
+                String suggestion = getSuggestion(i);
+                searchView.setQuery(suggestion, true); // submit query now
+                return true; // replace default search manager behaviour
+            }
+        });
+
+
 
 
 
@@ -834,6 +893,60 @@ private void postNotification(String msg) {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+ //Method that Loads suggestions for the searchView
+    private void loadHistory(String query) {
+
+
+
+        // Cursor
+        String[] columns = new String[]{"_id", "text"};
+        Object[] temp = new Object[]{0, "default"};
+
+        MatrixCursor cursor = new MatrixCursor(columns);
+
+        for (int i = 0; i < items.size(); i++) {
+
+            temp[0] = i;
+            temp[1] = items.get(i);
+
+            cursor.addRow(temp);
+
+        }
+
+       mAdapter=(new ExampleAdapter(this, cursor, items));
+
+
+
+
+    }
+
+//Method that Returns the suggestions clicked for searchView
+    private String getSuggestion(int position) {
+
+        String suggest1="none";
+        if(position==0) {
+            suggest1 = "Jackets";
+
+        }
+      else  if(position==1) {
+            suggest1 = "Suits";
+        }
+      else  if(position==2) {
+            suggest1 = "Shoes";
+        }
+       else if(position==3) {
+            suggest1 = "Dresses";
+        }
+       else if(position==4) {
+            suggest1 = "Ties";
+        }
+        else{
+            suggest1 = "Unknown";
+
+        }
+
+        return suggest1;
     }
 
 }

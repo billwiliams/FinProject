@@ -3,5 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/premium_texture_wood">
+    <TextView
+        android:id="@+id/premiumTextView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textStyle="italic|bold"
+
+        android:textSize="23dp"/>
 
 </LinearLayout>

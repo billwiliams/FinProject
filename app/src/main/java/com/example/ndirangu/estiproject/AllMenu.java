@@ -15,6 +15,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -39,6 +40,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -71,38 +73,49 @@ import java.util.concurrent.TimeUnit;
 
 
 import static com.example.ndirangu.estiproject.R.id.content_frame;
+import static com.example.ndirangu.estiproject.R.id.home_ImageView;
+import static com.example.ndirangu.estiproject.R.id.home_TextView;
 
 
 public class AllMenu extends android.support.v4.app.FragmentActivity implements ActionBar.TabListener {
-    //ESTIMOTE
+    //ESTIMOTE BEACONS
     private static final String TAG = AllMenu.class.getSimpleName();
     private static final String ESTIMOTE_PROXIMITY_UUID = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";
     private static final Region ALL_ESTIMOTE_BEACONS = new Region("regionId", ESTIMOTE_PROXIMITY_UUID, null, null);
-    private static final int MINOR_FROM_BEACON_ONE=15188;
-    private static final int MINOR_FROM_BEACON_TWO=8346;
-    private static final int MINOR_FROM_BEACON_THREE=83469;
+    private static final int MINOR_FROM_BEACON_ONE=8346;
+    private static final int MINOR_FROM_BEACON_TWO=55586;
+    private static final int MINOR_FROM_BEACON_THREE=15188;
     private static final int NOTIFICATION_ID = 123;
     private static final int REQUEST_ENABLE_BT = 1234;
+    private static boolean Region_Already_Entered=false;
+    private static boolean PremiumUser=false;
+    private static Beacon ClosestBeacon;
+    Utils.Proximity RegionProximity= Utils.Proximity.IMMEDIATE;
     private BeaconManager beaconManager;
     private NotificationManager notificationManager;
 
-    //ESTIMOTE
+    //ESTIMOTE BEACONS
+//Post
+    private static int PostTask=1;
+    //SEARCH
+    private static String SearchQuery;
+    //SEARCH
     TextView txtQuery;
    static  String emaili,Music,LoginTime,userBirthday;
 
     //ActionBar
     ActionBar bar;
-    //Navigation Drawer
+    //NAVIGATION DRAWER
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
    static String[] mPlanetTitles;
-    //Navigation drawer
+    //NAVIGATION DRAWER
 
 
-    //SwipeViews
+    //SWIPEVIEWS
     ViewPager mViewPager;
 
 
@@ -140,12 +153,15 @@ public class AllMenu extends android.support.v4.app.FragmentActivity implements 
         }
 
         //Swipe Views
+        //imageview
+
         //Items variables from database
         TextView text=(TextView)findViewById(R.id.database);
 //start a new instant of database class mysqlitehelper
         MySQLiteHelper me=new MySQLiteHelper(getApplicationContext());
         //show the text that the user queries
         txtQuery=(TextView)findViewById(R.id.textquery);
+        //UPDATE THE VARIABLES WITH VALUES FROM THE DATABASE
         try {
 //set the emaili string to the email of the user
             emaili = me.findEmail();
@@ -159,6 +175,7 @@ public class AllMenu extends android.support.v4.app.FragmentActivity implements 
             emaili="unknown";
             Music="unknown";
             userBirthday="unknown";
+            LoginTime=getCurrentTimeStamp();
         }
         mPlanetTitles =new String [6];
         mPlanetTitles[0]="    About Me ";
@@ -228,20 +245,60 @@ public class AllMenu extends android.support.v4.app.FragmentActivity implements 
 
             @Override
             public void onBeaconsDiscovered(final Region region, final List<Beacon> beacons) {
-                //onBeaconsDiscovered(region,beacons);
+                //onBeaconsDiscovered(region,beacons); helps to discover beacons in the region
                 try {
                     Log.d("TAG", (String.valueOf(beacons.get(0).getMinor())));
+                    ClosestBeacon=beacons.get(0);
+                    ImageView home_ImageView=(ImageView)findViewById(R.id.home_ImageView);
+                    TextView home_TextView=(TextView)findViewById(R.id.home_TextView);
+                    RelativeLayout homeLayout=(RelativeLayout)findViewById(R.id.home_Layout);
+                    RelativeLayout.LayoutParams lprams = new RelativeLayout.LayoutParams(
+                            RelativeLayout.LayoutParams.WRAP_CONTENT,
+                            RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    Button AddToCart =new Button(getApplicationContext());
+                    Button SpeakToSpecialist =new Button(getApplicationContext());
+
+                    int id_one=R.id.AddToCart;
+                    AddToCart.setId(id_one);
+                   AddToCart.setText("Add To Cart");
+                    SpeakToSpecialist.setText("Request Specialist");
+
                     //if closest beacons is the one whose minor value is given by MINOR_FROM_BEACON_ONE
                     if (beacons.get(0).getMinor()==MINOR_FROM_BEACON_ONE){
-                        //tasks do to for
+
+                        //tasks do to
+
+                        home_ImageView.setImageResource(R.drawable.suit);
+                        home_TextView.setText("Armani custom suit \n" +
+                                        "Style: Italian Milanese\n" +
+                                        "Designer: Giorgio Armani\n" +
+                                        "Fabric: Linen\n" +
+                                        "Pattern: Pinstripe\n" +
+                                        "Price: 150,000/= Kshs"
+                        );
+
+
+
 
                     }
                     //if closest beacons is the one whose minor value is given by MINOR_FROM_BEACON_TWO
                     else if(beacons.get(0).getMinor()==MINOR_FROM_BEACON_TWO){
+                        //tasks do to
+                        home_ImageView.setImageResource(R.drawable.handbag_shoes);
+                        home_TextView.setText("You are Approximately "+ Utils.computeAccuracy(beacons.get(0))+ " Meters From this Item");
+
+                        if(Utils.computeProximity(beacons.get(0))==RegionProximity){
+                            PostTask=3;
+
+                        }
+
+
+
 
                     }
                     //if closest beacons is the one whose minor value is given by MINOR_FROM_BEACON_THREE
                     else if(beacons.get(0).getMinor()==MINOR_FROM_BEACON_THREE){
+                        //tasks do to
 
                     }
                     //Otherwise do nothing
@@ -259,15 +316,20 @@ public class AllMenu extends android.support.v4.app.FragmentActivity implements 
         beaconManager.setMonitoringListener(new BeaconManager.MonitoringListener() {
             @Override
             public void onEnteredRegion(final Region region, final List<Beacon> beacons) {
+               if (Region_Already_Entered==false) {
 
-             postNotification("Welcome to the My Shopping Mate where design meets style");
+                   postNotification("Welcome to the My Shopping Mate where design meets style");
                /*we are going to use asynctask to prevent network on main thread exception while sending music likes to music.myshoppingmate.com/post.php
                *when a user enters a region around the shop his data is posted and added to the database ,email,time of visit and Music likes
                *
                */
-                new PostDataAsyncTask().execute();
+                   new PostDataAsyncTask().execute();
+                   Region_Already_Entered=true;
 
-
+               }
+                else{
+                   //dont post notification if the user has already entered the region
+               }
 
 
 
@@ -342,8 +404,13 @@ public class AllMenu extends android.support.v4.app.FragmentActivity implements 
                 //Here u can get the value "query" which is entered in the search box.
                 Log.e("String query","" + query);
                 Toast.makeText(AllMenu.this, "your  search  for " +query + "  has been forwarded and you will be notified when in range", Toast.LENGTH_SHORT).show();
-
+                //set the variable searchquery to the string entered
+                SearchQuery=query;
                 // call your request, do some stuff..
+                PostTask=2;
+                new PostDataAsyncTask().execute();
+
+
                 searchView.onActionViewCollapsed();  //collapse your ActionView
                 searchView.setQuery("",false);       //clears your query without submit
 
@@ -397,16 +464,42 @@ public class AllMenu extends android.support.v4.app.FragmentActivity implements 
         protected String doInBackground(String... strings) {
             try {
 
-                // 1 = post text data, 2 = any other post apart from text
-                int actionChoice = 1;
+                // 1 = post text data, 2 = post to search,3=post to adverts
+                int actionChoice =PostTask;
 
                 // post a text data
                 if(actionChoice==1){
                     postText();
                 }
 
+
                 // any other post apart from text
-                else{
+                else if(actionChoice==2){
+                    postToSearch();
+
+                }
+                else if(actionChoice==3){
+                    String url="http://adverts.myshoppingmate.com/index.php";
+                    int Minor_Closest_Beacon=0;
+
+
+                    if(ClosestBeacon!=null){
+                        if (ClosestBeacon.getMinor()==MINOR_FROM_BEACON_ONE){
+                            Minor_Closest_Beacon=MINOR_FROM_BEACON_ONE;
+                        }
+                        else if(ClosestBeacon.getMinor()==MINOR_FROM_BEACON_TWO){
+                            Minor_Closest_Beacon=MINOR_FROM_BEACON_TWO;
+
+                        }
+                        else {
+
+                        }
+                    }
+
+                    postToAdverts(url,PremiumUser,Minor_Closest_Beacon);
+
+                }
+                else {
 
                 }
 
@@ -614,7 +707,7 @@ private void postNotification(String msg) {
             public void onServiceReady() {
                 try {
                     beaconManager.startRanging(ALL_ESTIMOTE_BEACONS);
-                    // beaconManager.startMonitoring(region);
+                     beaconManager.startMonitoring(ALL_ESTIMOTE_BEACONS);
                 } catch (RemoteException e) {
                     Log.d(TAG, "Error while starting monitoring");
                 }
@@ -655,6 +748,92 @@ private void postNotification(String msg) {
         });
 
     }
+    private void postToAdverts(String url,boolean AccountType,int Minor){
+        try{
+            // url where the data will be posted this data will be stored in a database
+            String postReceiverUrl = url;
+            Log.v("PHP", "postURL: " + postReceiverUrl);
 
+            // HttpClient
+            HttpClient httpClient = new DefaultHttpClient();
+
+            // post header
+            HttpPost httpPost = new HttpPost(postReceiverUrl);
+
+            // add your data which includes Music, email and Login time
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+            nameValuePairs.add(new BasicNameValuePair("usertype",String.valueOf(AccountType)));
+            nameValuePairs.add(new BasicNameValuePair("username",emaili ));
+            nameValuePairs.add(new BasicNameValuePair("beacons",String.valueOf(Minor) ));
+
+
+
+            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+            // execute HTTP post request
+            HttpResponse response = httpClient.execute(httpPost);
+            HttpEntity resEntity = response.getEntity();
+
+            if (resEntity != null) {
+
+                String responseStr = EntityUtils.toString(resEntity).trim();
+                Log.v("PHP", "Response: " +  responseStr);
+
+                // you can add an if statement here and do other actions based on the response
+            }
+
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private void postToSearch(){
+        try{
+            String UserType="Unknown";
+            if(PremiumUser==false){
+                UserType="Reqular";
+            }
+
+            // url where the data will be posted this data will be stored in a database
+            String postReceiverUrl = "http://searches.myshoppingmate.com/post.php";
+            Log.v("PHP", "postURL: " + postReceiverUrl);
+
+            // HttpClient
+            HttpClient httpClient = new DefaultHttpClient();
+
+            // post header
+            HttpPost httpPost = new HttpPost(postReceiverUrl);
+
+            // add your data which includes Music, email and Login time
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+            nameValuePairs.add(new BasicNameValuePair("query",SearchQuery ));
+            nameValuePairs.add(new BasicNameValuePair("user",emaili ));
+            nameValuePairs.add(new BasicNameValuePair("date",LoginTime ));
+            nameValuePairs.add(new BasicNameValuePair("usertype",UserType ));
+
+
+            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+            // execute HTTP post request
+            HttpResponse response = httpClient.execute(httpPost);
+            HttpEntity resEntity = response.getEntity();
+
+            if (resEntity != null) {
+
+                String responseStr = EntityUtils.toString(resEntity).trim();
+                Log.v("PHP", "Response: " +  responseStr);
+
+                // you can add an if statement here and do other actions based on the response
+            }
+
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

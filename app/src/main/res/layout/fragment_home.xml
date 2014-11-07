@@ -1,14 +1,51 @@
+<ScrollView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="#FFFFFF"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container"
+    android:id="@+id/home_Layout"
     android:layout_width="fill_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
     tools:context="com.example.ndirangu.estiproject.Home"
     tools:ignore="MergeRootFrame" >
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/shoesimages"/>
 
-    </RelativeLayout>
+    <ImageView
+        android:id="@+id/home_ImageView"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:scaleType="fitXY"
+        android:layout_centerHorizontal="true"/>
+
+<TextView
+    android:id="@+id/home_TextView"
+    android:layout_below="@+id/home_ImageView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textSize="18dp"
+    android:textStyle="italic"
+    android:layout_centerHorizontal="true"
+
+    />
+    <Button
+        android:id="@+id/AddToCart"
+        android:layout_below="@+id/home_TextView"
+        android:layout_width="270dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/flat_selector"
+        android:text="Add To Cart"/>
+    <Button
+        android:id="@+id/Specialist"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/AddToCart"
+        android:layout_width="270dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/flat_selector"
+        android:text="Speak To  A Specialist"/>
+
+ </RelativeLayout>
+</ScrollView>

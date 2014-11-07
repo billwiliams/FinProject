@@ -288,19 +288,13 @@ public class AllMenu extends android.support.v4.app.FragmentActivity implements 
                                         "Pattern: Pinstripe\n" +
                                         "Price: 150,000/= Kshs"
                         );
+                        if (SearchQuery.equalsIgnoreCase("Suits")|| SearchQuery.equalsIgnoreCase("Jackets" )) {
+                            Toast.makeText(getApplicationContext(),"The Item " + SearchQuery + " you had searched is Near your current vicinity", Toast.LENGTH_SHORT).show();
+                            Log.d(TAG,"Adding  "+SearchQuery);
+                            SearchQuery=null;
 
-
-
-
-                    }
-                    //if closest beacons is the one whose minor value is given by MINOR_FROM_BEACON_TWO
-                    else if(beacons.get(0).getMinor()==MINOR_FROM_BEACON_TWO){
-                        //tasks do to
-                        home_ImageView.setImageResource(R.drawable.handbag_shoes);
-                        home_TextView.setText("You are Approximately "+ Utils.computeAccuracy(beacons.get(0))+ " Meters From this Item");
-
-                        if(Utils.computeProximity(beacons.get(0))==RegionProximity){
-                            PostTask=3;
+                        }
+                        else {
 
                         }
 
@@ -308,14 +302,36 @@ public class AllMenu extends android.support.v4.app.FragmentActivity implements 
 
 
                     }
-                    //if closest beacons is the one whose minor value is given by MINOR_FROM_BEACON_THREE
-                    else if(beacons.get(0).getMinor()==MINOR_FROM_BEACON_THREE){
-                        //tasks do to
+                    //if closest beacons is the one whose minor value is given by MINOR_FROM_BEACON_TWO
+                    else {
+                        if (beacons.get(0).getMinor() == MINOR_FROM_BEACON_TWO) {
+                            //tasks do to
+                            home_ImageView.setImageResource(R.drawable.handbag_shoes);
+                            home_TextView.setText("You are Approximately " + Utils.computeAccuracy(beacons.get(0)) + " Meters From this Item");
+                            if (SearchQuery.equalsIgnoreCase("Ties")||SearchQuery.equalsIgnoreCase("Dresses")||SearchQuery.equalsIgnoreCase("Shoes")) {
+                                Toast.makeText(getBaseContext(),"The Item " + SearchQuery + " you had searched is Near your current vicinity", Toast.LENGTH_LONG).show();
+                                SearchQuery=null;
+                                return;
+                            } else {
 
-                    }
-                    //Otherwise do nothing
-                    else{
+                            }
 
+                            if (Utils.computeProximity(beacons.get(0)) == RegionProximity) {
+                                PostTask = 3;
+
+                            }
+
+
+                        }
+                        //if closest beacons is the one whose minor value is given by MINOR_FROM_BEACON_THREE
+                        else if (beacons.get(0).getMinor() == MINOR_FROM_BEACON_THREE) {
+                            //tasks do to
+
+                        }
+                        //Otherwise do nothing
+                        else {
+
+                        }
                     }
 
                 }catch (Exception e){
@@ -443,19 +459,7 @@ public class AllMenu extends android.support.v4.app.FragmentActivity implements 
                 return true;
 
             }
-            public boolean onSuggestionClick(int position) {
-                String suggestion = getSuggestion(position);
-                searchView.setQuery(suggestion, true); // submit query now
-                return true; // replace default search manager behaviour
-            }
 
-            private String getSuggestion(int position) {
-                Cursor cursor = (Cursor) searchView.getSuggestionsAdapter().getItem(
-                        position);
-                String suggest1 = cursor.getString(cursor
-                        .getColumnIndex(SearchManager.SUGGEST_COLUMN_TEXT_1));
-                return suggest1;
-            }
 
 
         };

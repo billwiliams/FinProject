@@ -4,6 +4,11 @@ import com.example.ndirangu.estiproject.Login;
 import com.example.ndirangu.estiproject.MySQLiteHelper;
 import com.example.ndirangu.estiproject.Users;
 import com.example.ndirangu.estiproject.util.SystemUiHider;
+import com.parse.Parse;
+import com.parse.ParseException;
+import com.parse.ParsePush;
+import com.parse.PushService;
+import com.parse.SaveCallback;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -67,6 +72,8 @@ public class StartfullActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Parse.initialize(getBaseContext(), "lFMlSHevZuVxgqsDWayVIGXrfUfu95vjOitDmIXA", "lgTKFqyulSwLFPs85TvxONg6SETNqCxI4sUs6YFV");
+        PushService.setDefaultPushCallback(this, StartfullActivity.class);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -172,6 +179,16 @@ public class StartfullActivity extends Activity {
 
 
       /*  */
+        ParsePush.subscribeInBackground("", new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null) {
+                    Log.d("com.parse.push", "successfully subscribed to the broadcast channel.");
+                } else {
+                    Log.e("com.parse.push", "failed to subscribe for push", e);
+                }
+            }
+        });
 
     }
     /*Updating the progress bar based on time passed*/

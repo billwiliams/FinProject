@@ -36,7 +36,8 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:background="@drawable/flat_selector"
-        android:text="Add To Cart"/>
+        android:text="Add To Cart"
+        android:onClick="AddToCart"/>
     <Button
         android:id="@+id/Specialist"
         android:layout_marginTop="20dp"
@@ -45,7 +46,8 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:background="@drawable/flat_selector"
-        android:text="Speak To  A Specialist"/>
+        android:text="Speak To  A Specialist"
+        android:onClick="onClickWhatsApp"/>
 
  </RelativeLayout>
 </ScrollView>

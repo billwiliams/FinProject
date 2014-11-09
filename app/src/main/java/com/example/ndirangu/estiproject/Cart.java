@@ -19,6 +19,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 /**
@@ -50,10 +51,14 @@ public class Cart extends Fragment  {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
        cartListView=(ListView)getActivity().findViewById(R.id.cart_list);
 
         mAdapter =new CustomList(getActivity(),cartString,cartImage);
         cartListView.setAdapter(mAdapter);
+        if(savedInstanceState!=null) {
+
+        }
          listView=cartListView;
         SwipeDismissListViewTouchListener touchListener =
                 new SwipeDismissListViewTouchListener(
@@ -114,6 +119,11 @@ public class Cart extends Fragment  {
         }
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+    }
 
 
 

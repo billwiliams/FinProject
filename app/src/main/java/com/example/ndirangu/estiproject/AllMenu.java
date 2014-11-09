@@ -12,16 +12,23 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.SearchManager;
 import android.bluetooth.BluetoothAdapter;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.provider.BaseColumns;
+import android.provider.ContactsContract;
 import android.support.v4.app.ActionBarDrawerToggle;
 
 //ESTIMOTE
@@ -29,12 +36,20 @@ import com.estimote.sdk.Beacon;
 import com.estimote.sdk.BeaconManager;
 import com.estimote.sdk.Region;
 import com.estimote.sdk.Utils;
-
+import com.parse.Parse;
+import com.parse.ParseException;
+import com.parse.ParseInstallation;
+import com.parse.ParseObject;
+import com.parse.ParsePush;
+import com.parse.PushService;
+import com.parse.SaveCallback;
 
 
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -95,6 +110,7 @@ public class AllMenu extends android.support.v4.app.FragmentActivity implements 
     private static final int REQUEST_ENABLE_BT = 1234;
     private static boolean Region_Already_Entered=false;
     private static boolean PremiumUser=false;
+    private static boolean MobileMoney=false;
     private static Beacon ClosestBeacon;
     Utils.Proximity RegionProximity= Utils.Proximity.IMMEDIATE;
     private BeaconManager beaconManager;
@@ -136,10 +152,13 @@ public class AllMenu extends android.support.v4.app.FragmentActivity implements 
         setContentView(R.layout.activity_all_menu);
         //search suggestions
 
+
+
         //search suggestions
         //ActionBar
        bar= getActionBar();
         bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        bar.setBackgroundDrawable(new ColorDrawable(Color.rgb(51, 181, 229)));
         //Swipe Views
         CollectionPagerAdapter mCollectionPagerAdapter;
 
@@ -308,16 +327,18 @@ public class AllMenu extends android.support.v4.app.FragmentActivity implements 
                             //tasks do to
                             home_ImageView.setImageResource(R.drawable.handbag_shoes);
                             home_TextView.setText("You are Approximately " + Utils.computeAccuracy(beacons.get(0)) + " Meters From this Item");
+
                             if (SearchQuery.equalsIgnoreCase("Ties")||SearchQuery.equalsIgnoreCase("Dresses")||SearchQuery.equalsIgnoreCase("Shoes")) {
                                 Toast.makeText(getBaseContext(),"The Item " + SearchQuery + " you had searched is Near your current vicinity", Toast.LENGTH_LONG).show();
                                 SearchQuery=null;
+
                                 return;
                             } else {
 
                             }
 
-                            if (Utils.computeProximity(beacons.get(0)) == RegionProximity) {
-                                PostTask = 3;
+                            if (Utils.computeProximity(beacons.get(0)).equals( RegionProximity)) {
+
 
                             }
 
@@ -326,6 +347,28 @@ public class AllMenu extends android.support.v4.app.FragmentActivity implements 
                         //if closest beacons is the one whose minor value is given by MINOR_FROM_BEACON_THREE
                         else if (beacons.get(0).getMinor() == MINOR_FROM_BEACON_THREE) {
                             //tasks do to
+                            if(Utils.computeProximity(beacons.get(0))==Utils.Proximity.IMMEDIATE) {
+                                PackageManager manager = getPackageManager();
+                                Intent intent = manager.getLaunchIntentForPackage("com.android.stk");
+                                if (intent != null)
+                                    startActivity(intent);
+                            }
+                            else if(Utils.computeProximity(beacons.get(0))==Utils.Proximity.NEAR){
+                                if (SearchQuery!=null){
+                                    Toast.makeText(getApplicationContext(),"you had searched  for the product "+SearchQuery+ " ",Toast.LENGTH_SHORT).show();
+                                    SearchQuery=null;
+
+                                }
+                                else {
+                                    if (MobileMoney == false) {
+                                        Toast.makeText(getApplicationContext(), "Convenience Meets reality.Pay for goods with Mobile Money  ", Toast.LENGTH_LONG).show();
+                                        MobileMoney=true;
+                                    } else {
+
+                                    }
+                                }
+
+                            }
 
                         }
                         //Otherwise do nothing
@@ -388,6 +431,7 @@ public class AllMenu extends android.support.v4.app.FragmentActivity implements 
 
 
     }
+
 
     public void onTabSelected(ActionBar.Tab tab,FragmentTransaction ft) {
 
@@ -952,5 +996,138 @@ private void postNotification(String msg) {
 
         return suggest1;
     }
+    //speak to a specialist
+    public void onClickWhatsApp(View view) {
+        String number="254718553698";
+        String text="A user in  recquires help in Womens clothes Section";
+        if (ClosestBeacon != null) {
+            if (ClosestBeacon.getMinor() == MINOR_FROM_BEACON_ONE){
+                number="254718553698";
+                text="A user in the "+Utils.computeProximity(ClosestBeacon)+" zone in the bags section requires help ";
+            }
+            else if(ClosestBeacon.getMinor() == MINOR_FROM_BEACON_TWO){
+                number="254718553698";
+                text="A user in the "+Utils.computeProximity(ClosestBeacon)+"zone in Suits section  requires help  ";
+            }
+
+            else{
+                number="254718553698";
+
+            }
+        }
+        sendSMS(number, text);
+    }
+    //Add to Cart
+    //speak to a specialist
+    public void AddToCart(View view) {
+        View addToCart;
+        ListView list;
+
+try {
+    list=(ListView)findViewById(R.id.list);
+
+    if (ClosestBeacon != null) {
+        if (ClosestBeacon.getMinor() == MINOR_FROM_BEACON_ONE) {
+            addToCart= list.getAdapter().getView(1,null,list);
+            Cart.cartListView.addFooterView(addToCart);
+            AllMenu.mPlanetTitles[4]= "Cart Items: "+String.valueOf( Cart.cartListView.getCount()-1);
+
+
+        } else if (ClosestBeacon.getMinor() == MINOR_FROM_BEACON_TWO) {
+            addToCart= list.getAdapter().getView(3,null,list);
+            Cart.cartListView.addFooterView(addToCart);
+            AllMenu.mPlanetTitles[4]= "Cart Items: "+String.valueOf( Cart.cartListView.getCount()-1);
+
+        } else {
+            addToCart= list.getAdapter().getView(3,null,list);
+            Cart.cartListView.addFooterView(addToCart);
+            AllMenu.mPlanetTitles[4]= "Cart Items: "+String.valueOf( Cart.cartListView.getCount()-1);
+
+
+        }
+    }
+}catch (Exception e){
+    Log.d(TAG,"couldnt add to cart");
+}
+
+    }
+    //send Message sms
+    private void sendSMS(String phoneNumber, String message)
+    {
+        String SENT = "SMS_SENT";
+        String DELIVERED = "SMS_DELIVERED";
+
+        PendingIntent sentPI = PendingIntent.getBroadcast(this, 0,
+                new Intent(SENT), 0);
+
+        PendingIntent deliveredPI = PendingIntent.getBroadcast(this, 0,
+                new Intent(DELIVERED), 0);
+
+        //---when the SMS has been sent---
+        registerReceiver(new BroadcastReceiver(){
+            @Override
+            public void onReceive(Context arg0, Intent arg1) {
+                switch (getResultCode())
+                {
+                    case Activity.RESULT_OK:
+                        Toast.makeText(getBaseContext(), "A specialist Will be with you Shortly ",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+                        Toast.makeText(getBaseContext(), "Generic failure",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NO_SERVICE:
+                        Toast.makeText(getBaseContext(), "No service",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NULL_PDU:
+                        Toast.makeText(getBaseContext(), "Null PDU",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_RADIO_OFF:
+                        Toast.makeText(getBaseContext(), "Radio off",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        }, new IntentFilter(SENT));
+
+        //---when the SMS has been delivered---
+        registerReceiver(new BroadcastReceiver(){
+            @Override
+            public void onReceive(Context arg0, Intent arg1) {
+                switch (getResultCode())
+                {
+                    case Activity.RESULT_OK:
+                        Toast.makeText(getBaseContext(), "SMS delivered",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        Toast.makeText(getBaseContext(), "SMS not delivered",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        }, new IntentFilter(DELIVERED));
+
+        SmsManager sms = SmsManager.getDefault();
+        sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
+    }
+
+//parse.com
+public void createTask(View v) {
+    if (Wishlist.mTaskInput.getText().length() > 0){
+        Task t = new Task();
+        t.setDescription(Wishlist.mTaskInput.getText().toString());
+
+        t.setCompleted(false);
+        t.saveEventually();
+        Wishlist.mTaskInput.setText("");
+        Wishlist.mAdapter.insert(t, 0);
+
+    }
+}
+
 
 }

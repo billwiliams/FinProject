@@ -28,6 +28,7 @@ import com.parse.SaveCallback;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
  * Created by NDIRANGU on 10/27/2014.
  */
@@ -65,6 +66,7 @@ static TaskAdapter mAdapter;
 //Parse.com
         Parse.initialize(getActivity(), "lFMlSHevZuVxgqsDWayVIGXrfUfu95vjOitDmIXA", "lgTKFqyulSwLFPs85TvxONg6SETNqCxI4sUs6YFV");
         ParseObject.registerSubclass(Task.class);
+
         updateData();
 
 
@@ -80,6 +82,7 @@ static TaskAdapter mAdapter;
         ParseQuery<Task> query = ParseQuery.getQuery(Task.class);
         query.setCachePolicy(ParseQuery.CachePolicy.CACHE_THEN_NETWORK);
 
+
         query.findInBackground(new FindCallback<Task>() {
 
             @Override
@@ -93,19 +96,19 @@ static TaskAdapter mAdapter;
     }
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Task task = mAdapter.getItem(position);
+      Task task = mAdapter.getItem(position);
         TextView taskDescription = (TextView) view.findViewById(R.id.task_description);
 
         task.setCompleted(!task.isCompleted());
 
         if(task.isCompleted()){
             taskDescription.setPaintFlags(taskDescription.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            task.deleteEventually();
+            task.deleteInBackground();
         }else{
             taskDescription.setPaintFlags(taskDescription.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
         }
 
-        task.saveEventually();
+        task.saveInBackground();
     }
 
 

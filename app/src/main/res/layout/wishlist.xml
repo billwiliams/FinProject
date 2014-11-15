@@ -20,7 +20,8 @@
             android:layout_weight="1"
             android:ems="10"
             android:inputType="text"
-            android:hint="Enter a Task">
+            android:hint="Enter a Task"
+            android:textColor="#ffffffff">
             <requestFocus />
         </EditText>
 

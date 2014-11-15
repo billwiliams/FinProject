@@ -13,7 +13,6 @@ apply plugin: 'android-library'
 dependencies {
     compile 'com.android.support:support-v4:20.+'
     compile files('libs/bolts-android-1.1.2.jar')
-
 }
 
 

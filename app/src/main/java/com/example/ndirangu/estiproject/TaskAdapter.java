@@ -10,6 +10,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import bolts.*;
+
+
 public class TaskAdapter extends ArrayAdapter<Task> {
     private Context mContext;
     private List<Task> mTasks;

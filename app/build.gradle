@@ -24,7 +24,6 @@ dependencies {
     compile files('libs/estimote-sdk-preview.jar')
     compile project(':libraries:simplefacebook')
     compile files('libs/Parse-1.7.1.jar')
+
 }
-
-
 

@@ -150,11 +150,13 @@ public class AllMenu extends android.support.v4.app.FragmentActivity implements 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_menu);
-        //search suggestions
+        //parse.com
+        Parse.initialize(this, "lFMlSHevZuVxgqsDWayVIGXrfUfu95vjOitDmIXA", "lgTKFqyulSwLFPs85TvxONg6SETNqCxI4sUs6YFV");
+        ParseObject.registerSubclass(Task.class);
 
 
 
-        //search suggestions
+        //parse.com
         //ActionBar
        bar= getActionBar();
         bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -326,7 +328,7 @@ public class AllMenu extends android.support.v4.app.FragmentActivity implements 
                         if (beacons.get(0).getMinor() == MINOR_FROM_BEACON_TWO) {
                             //tasks do to
                             home_ImageView.setImageResource(R.drawable.handbag_shoes);
-                            home_TextView.setText("You are Approximately " + Utils.computeAccuracy(beacons.get(0)) + " Meters From this Item");
+                            home_TextView.setText(String.format("You are Approximately  %.2f", Utils.computeAccuracy(beacons.get(0))) + "Meters From this Item");
 
                             if (SearchQuery.equalsIgnoreCase("Ties")||SearchQuery.equalsIgnoreCase("Dresses")||SearchQuery.equalsIgnoreCase("Shoes")) {
                                 Toast.makeText(getBaseContext(),"The Item " + SearchQuery + " you had searched is Near your current vicinity", Toast.LENGTH_LONG).show();
@@ -1007,7 +1009,7 @@ private void postNotification(String msg) {
             }
             else if(ClosestBeacon.getMinor() == MINOR_FROM_BEACON_TWO){
                 number="254718553698";
-                text="A user in the "+Utils.computeProximity(ClosestBeacon)+"zone in Suits section  requires help  ";
+                text="A user in the "+Utils.computeProximity(ClosestBeacon)+" zone in Suits section  requires help  ";
             }
 
             else{
@@ -1122,7 +1124,7 @@ public void createTask(View v) {
         t.setDescription(Wishlist.mTaskInput.getText().toString());
 
         t.setCompleted(false);
-        t.saveEventually();
+        t.saveInBackground();
         Wishlist.mTaskInput.setText("");
         Wishlist.mAdapter.insert(t, 0);
 

@@ -43,7 +43,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older users table if existed
-        db.execSQL("DROP TABLE IF EXISTS USERS");
+        db.execSQL("DROP TABLE IF EXISTS Users");
 
         // create fresh books table
         this.onCreate(db);
@@ -53,7 +53,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     * OPS
      */
     // user table name
-    private static final String TABLE_USERS = "users";
+    private static final String TABLE_USERS = "Users";
 
     // user Table Columns names
     private static final String KEY_ID = "id";
@@ -63,14 +63,17 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     private static final String KEY_BIRTHDAY = "birthday";
 
     private static final String[] COLUMNS = {KEY_ID,KEY_TOKEN,KEY_EMAIL,KEY_MUSICLIKES,KEY_BIRTHDAY};
-    public void AddUser(Users user){
-        ContentValues values = new ContentValues();
-        values.put(KEY_EMAIL, user.getEmail());
-        values.put(KEY_TOKEN, user.getToken());
-        values.put(KEY_MUSICLIKES,user.getMusicLikes());
-        values.put(KEY_BIRTHDAY,user.getBirthday());
+    public void AddUser(String userEmail,String Token,String Musiclikes,String Birthday){
 
         SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(KEY_EMAIL, userEmail);
+        values.put(KEY_TOKEN, Token);
+        values.put(KEY_MUSICLIKES,Musiclikes);
+        values.put(KEY_BIRTHDAY,Birthday);
+
+
 
         db.insert(TABLE_USERS, null, values);
         db.close();

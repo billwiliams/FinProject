@@ -1,5 +1,7 @@
 package com.example.ndirangu.estiproject;
 
+import android.util.Log;
+
 /**
  * Created by NDIRANGU on 10/2/2014.
  */
@@ -20,13 +22,7 @@ public class Users {
             this.Email = Email;
             this.MusicLikes = MusicLikes;
         }
-    public Users(String Email,String Token,String Birthday,String MusicLikes){
 
-        this.Birthday = Birthday;
-        this.Token = Token;
-        this.Email = Email;
-        this.MusicLikes = MusicLikes;
-    }
     public void setId(int Id){
         this.Id=Id;
     }
@@ -55,11 +51,14 @@ public void setEmail(String Email){
     }
 
     public String getEmail() {
+        Log.i("DB",Token);
         return this.Email;
     }
 
     public String getToken() {
+        Log.i("DB",Token);
         return this.Token;
+
     }
 
     public String getMusicLikes() {

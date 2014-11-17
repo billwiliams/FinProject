@@ -115,6 +115,7 @@ requestWindowFeature(Window.FEATURE_ACTION_BAR);
 
  //get the facebook access token form the current session
  Token =mSimpleFacebook.getSession().getAccessToken();
+           Log.i(TAG,Token);
 
 
 
@@ -145,9 +146,9 @@ requestWindowFeature(Window.FEATURE_ACTION_BAR);
 
 
             });
-            //allows items to be added to the database failure to which no item will be added to the database
 
             mSimpleFacebook.getProfile(onProfileListener);
+
 
 
 
@@ -164,32 +165,7 @@ requestWindowFeature(Window.FEATURE_ACTION_BAR);
             overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
 
         }
-        OnProfileListener onProfileListener = new OnProfileListener() {
-            @Override
-            public void onComplete(Profile profile) {
-                Log.i(TAG, "My profile id = " + profile.getId());
-                Email=profile.getEmail();
-                Log.i(TAG,Email);
-                Birthday=profile.getBirthday();
-                Id=Integer.parseInt(profile.getId());
-                Username=profile.getFirstName();
-                Log.i(TAG,Username +Birthday);
-                //Create a database and store users info
-                Users user=new Users();
-                user.setBirthday(Birthday);
-                user.setToken(Token);
-                user.setMusicLikes(MusicLikes);
-                user.setEmail(Email);
-                //create a new instance of mysqlhelper and add the user to the database
-                MySQLiteHelper mysqlhelper= new MySQLiteHelper(getApplicationContext());
-                mysqlhelper.AddUser(user);
-            }
-
-    /*
-     * You can override other methods here:
-     * onThinking(), onFail(String reason), onException(Throwable throwable)
-     */
-        };
+        //allows items to be added to the database failure to which no item will be added to the database
 
 
 
@@ -219,10 +195,44 @@ requestWindowFeature(Window.FEATURE_ACTION_BAR);
      * onThinking(), onFail(String reason), onException(Throwable throwable)
      */
     };
+    OnProfileListener onProfileListener = new OnProfileListener() {
+        @Override
+        public void onComplete(Profile profile) {
+            Log.i(TAG, "My profile id = " + profile.getId());
+            Email=profile.getEmail();
+            Log.i(TAG,Email);
+            Birthday=profile.getBirthday();
+            Log.i(TAG,Birthday);
+           /* Id=Integer.parseInt(profile.getId());
+            Username=profile.getFirstName();
+            Log.i(TAG,profile.getFirstName());
+            //Create a database and store users info
+            Users user=new Users();
+
+            user.setBirthday(Birthday);
+            user.setToken(Token);
+            Log.i(TAG, Token);
+            user.setMusicLikes(MusicLikes);
+            Log.i(TAG,MusicLikes);
+            user.setEmail(Email);*/
+            //create a new instance of mysqlhelper and add the user to the database
+            MySQLiteHelper mysqlhelper= new MySQLiteHelper(getApplicationContext());
+            mysqlhelper.AddUser(Email,Token,MusicLikes,Birthday);
+            Log.i(TAG,"added User");
+        }
+
+    /*
+     * You can override other methods here:
+     * onThinking(), onFail(String reason), onException(Throwable throwable)
+     */
+    };
+
     public void LoginFacebook(View view){
         if(view.getId()==R.id.loginButton){
             //enable facebook login on clicking the login with facebook login button
         mSimpleFacebook.login(onLoginListener);
+
+
 
 
 

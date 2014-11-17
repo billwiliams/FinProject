@@ -169,6 +169,7 @@ public class AllMenu extends android.support.v4.app.FragmentActivity implements 
                 getSupportFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mCollectionPagerAdapter);
+        mViewPager.setOffscreenPageLimit(6);
         mViewPager
                 .setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 
@@ -190,12 +191,13 @@ public class AllMenu extends android.support.v4.app.FragmentActivity implements 
 
         //Items variables from database
         TextView text=(TextView)findViewById(R.id.database);
-//start a new instant of database class mysqlitehelper
-        MySQLiteHelper me=new MySQLiteHelper(getApplicationContext());
+
         //show the text that the user queries
         txtQuery=(TextView)findViewById(R.id.textquery);
         //UPDATE THE VARIABLES WITH VALUES FROM THE DATABASE
         try {
+       //start a new instant of database class mysqlitehelper
+      MySQLiteHelper me=new MySQLiteHelper(getApplicationContext());
 //set the emaili string to the email of the user
             emaili = me.findEmail();
             //display the artists the user likes
@@ -205,10 +207,10 @@ public class AllMenu extends android.support.v4.app.FragmentActivity implements 
             userBirthday = me.findBirthday(emaili);
             LoginTime=getCurrentTimeStamp();
         }catch (Exception e){
-            emaili="unknown";
+           /* emaili="unknown";
             Music="unknown";
             userBirthday="unknown";
-            LoginTime=getCurrentTimeStamp();
+            LoginTime=getCurrentTimeStamp();*/
         }
         mPlanetTitles =new String [6];
         mPlanetTitles[0]="    About Me ";
@@ -273,7 +275,7 @@ public class AllMenu extends android.support.v4.app.FragmentActivity implements 
         beaconManager = new BeaconManager(this);
         // Default values are 5s of scanning and 25s of waiting time to save CPU cycles.
         // In order for this demo to be more responsive and immediate we lower down those values.
-        beaconManager.setBackgroundScanPeriod(TimeUnit.SECONDS.toMillis(1), 0);
+        beaconManager.setBackgroundScanPeriod(TimeUnit.SECONDS.toMillis(1), 2);
         beaconManager.setRangingListener(new BeaconManager.RangingListener() {
 
             @Override

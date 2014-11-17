@@ -211,12 +211,22 @@ public class StartfullActivity extends Activity {
                         boolean db=doesDatabaseExist(file);
                         if(db==true) {
                             try {
-                                Intent mainIntent=new Intent(StartfullActivity.this,AllMenu.class);
-                                StartfullActivity.this.startActivity(mainIntent);
+                                MySQLiteHelper helpdb=new MySQLiteHelper(getApplication());
+                                String Token=helpdb.findEmail();
+                                if (Token!=null) {
+                                    Intent mainIntent = new Intent(StartfullActivity.this, AllMenu.class);
+                                    StartfullActivity.this.startActivity(mainIntent);
 
-                                StartfullActivity.this.finish();
-                                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                                    StartfullActivity.this.finish();
+                                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                                }
+                                else{
+                                    Intent mainIntent=new Intent(StartfullActivity.this,Login.class);
+                                    StartfullActivity.this.startActivity(mainIntent);
 
+                                    StartfullActivity.this.finish();
+                                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                                }
 
                             }catch (Exception e){
                                 Log.d("DATABASE","Unable to find Token");

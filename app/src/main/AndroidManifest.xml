@@ -28,7 +28,9 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme"
+        android:hardwareAccelerated="true">
+
         <activity
             android:name=".StartfullActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"

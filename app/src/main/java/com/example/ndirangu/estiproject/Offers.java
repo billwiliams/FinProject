@@ -1,5 +1,7 @@
 package com.example.ndirangu.estiproject;
 
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 
@@ -18,6 +20,7 @@ import android.widget.Toast;
 
 public class Offers extends Fragment {
     ListView list;
+    ProgressDialog progress;
     View viewcart;
     String[] web = {
             "\nladies  Dress @ 10% discount\n",
@@ -55,10 +58,12 @@ public class Offers extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         CustomList adapter = new
                 CustomList(getActivity(), web, imageId);
         list=(ListView)getActivity().findViewById(R.id.list);
         list.setAdapter(adapter);
+
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
@@ -85,6 +90,10 @@ public class Offers extends Fragment {
         });
 
 
+
     }
 
+
+
 }
+

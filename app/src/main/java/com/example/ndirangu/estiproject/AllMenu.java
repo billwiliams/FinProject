@@ -1006,11 +1006,11 @@ private void postNotification(String msg) {
         String text="A user in  recquires help in Womens clothes Section";
         if (ClosestBeacon != null) {
             if (ClosestBeacon.getMinor() == MINOR_FROM_BEACON_ONE){
-                number="254718553698";
+                number="254715840346";
                 text="A user in the "+Utils.computeProximity(ClosestBeacon)+" zone in the bags section requires help ";
             }
             else if(ClosestBeacon.getMinor() == MINOR_FROM_BEACON_TWO){
-                number="254718553698";
+                number="254720023598";
                 text="A user in the "+Utils.computeProximity(ClosestBeacon)+" zone in Suits section  requires help  ";
             }
 
@@ -1032,7 +1032,7 @@ try {
 
     if (ClosestBeacon != null) {
         if (ClosestBeacon.getMinor() == MINOR_FROM_BEACON_ONE) {
-            addToCart= list.getAdapter().getView(1,null,list);
+            addToCart= Offers.list.getAdapter().getView(1,null,Offers.list);
             Cart.cartListView.addFooterView(addToCart);
             AllMenu.mPlanetTitles[4]= "Cart Items: "+String.valueOf( Cart.cartListView.getCount()-1);
 
@@ -1043,7 +1043,7 @@ try {
             AllMenu.mPlanetTitles[4]= "Cart Items: "+String.valueOf( Cart.cartListView.getCount()-1);
 
         } else {
-            addToCart= list.getAdapter().getView(3,null,list);
+            addToCart= Offers.list.getAdapter().getView(3,null,Offers.list);
             Cart.cartListView.addFooterView(addToCart);
             AllMenu.mPlanetTitles[4]= "Cart Items: "+String.valueOf( Cart.cartListView.getCount()-1);
 

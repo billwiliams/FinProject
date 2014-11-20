@@ -19,7 +19,7 @@ import android.widget.Toast;
 
 
 public class Offers extends Fragment {
-    ListView list;
+    static ListView list;
     ProgressDialog progress;
     View viewcart;
     String[] web = {

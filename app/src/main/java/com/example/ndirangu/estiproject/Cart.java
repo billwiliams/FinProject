@@ -75,7 +75,15 @@ public class Cart extends Fragment  {
                                    Log.e("Swipe",""+position );
                                     //remove the view at the position swipped
                                    listView.removeFooterView(cartListView.getChildAt(position));
+                                    if (position<7){
+
+                                        AllMenu.ShoppingAmount-= Offers.Amount[position];
+                                        if (AllMenu.ShoppingAmount<0||Cart.cartListView.getCount()-1==0){
+                                            AllMenu.ShoppingAmount=0;
+                                        }
+                                    }
                                     AllMenu.mPlanetTitles[4]= "Cart Items: "+String.valueOf( Cart.cartListView.getCount()-1);
+                                    AllMenu.mPlanetTitles[5]="Cart Items Amount:"+String.valueOf(AllMenu.ShoppingAmount);
 
                                 }
                                 mAdapter.notifyDataSetChanged();

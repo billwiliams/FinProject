@@ -43,7 +43,15 @@ public class Offers extends Fragment {
             R.drawable.womens_fashion
     };
 
-
+   static  Integer[] Amount = {
+            2000,
+            150000,
+            1654,
+            4356,
+            2345,
+            150,
+            10000
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -79,7 +87,9 @@ public class Offers extends Fragment {
 
 
                 Cart.cartListView.addFooterView(viewcart);
+                AllMenu.ShoppingAmount+=Amount[+position];
                 AllMenu.mPlanetTitles[4]= "Cart Items: "+String.valueOf( Cart.cartListView.getCount()-1);
+                AllMenu.mPlanetTitles[5]="Cart Items Amount:"+String.valueOf(AllMenu.ShoppingAmount);
 
 
 

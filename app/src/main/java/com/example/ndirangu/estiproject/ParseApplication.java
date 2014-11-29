@@ -1,5 +1,8 @@
 package com.example.ndirangu.estiproject;
 
+import com.estimote.sdk.Beacon;
+import com.estimote.sdk.BeaconManager;
+import com.estimote.sdk.Region;
 import com.parse.Parse;
 import com.parse.ParseACL;
 
@@ -7,8 +10,15 @@ import com.parse.ParseUser;
 import com.parse.PushService;
 
 import android.app.Application;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Intent;
+
+import java.util.List;
 
 public class ParseApplication extends Application {
+
 
     @Override
     public void onCreate() {
@@ -25,6 +35,8 @@ public class ParseApplication extends Application {
         defaultACL.setPublicReadAccess(true);
 
         ParseACL.setDefaultACL(defaultACL, true);
+
+
     }
 
 }

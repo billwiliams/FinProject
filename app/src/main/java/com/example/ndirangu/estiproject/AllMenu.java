@@ -108,8 +108,9 @@ public class AllMenu extends android.support.v4.app.FragmentActivity implements 
     private static final int MINOR_FROM_BEACON_THREE=15188;
     private static final int NOTIFICATION_ID = 123;
     private static final int REQUEST_ENABLE_BT = 1234;
-    private static boolean Region_Already_Entered=false;
-    private static boolean PremiumUser=false;
+    static int ShoppingAmount=0;
+private boolean Region_Already_Entered=false;
+     static boolean PremiumUser=true;
     private static boolean MobileMoney=false;
     private static Beacon ClosestBeacon;
     Utils.Proximity RegionProximity= Utils.Proximity.IMMEDIATE;
@@ -205,12 +206,12 @@ public class AllMenu extends android.support.v4.app.FragmentActivity implements 
             Log.i("Music", Music);
             text.setText(me.findUser(emaili));
             userBirthday = me.findBirthday(emaili);
-            LoginTime=getCurrentTimeStamp();
+
         }catch (Exception e){
-           /* emaili="unknown";
+            emaili="unknown";
             Music="unknown";
             userBirthday="unknown";
-            LoginTime=getCurrentTimeStamp();*/
+            LoginTime="unknown";
         }
         mPlanetTitles =new String [6];
         mPlanetTitles[0]="    About Me ";
@@ -218,7 +219,7 @@ public class AllMenu extends android.support.v4.app.FragmentActivity implements 
         mPlanetTitles[2]="Last entered store: "+LoginTime;
         mPlanetTitles[3]="My Birthday: "+userBirthday;
         mPlanetTitles[4]="Cart items:" ;
-        mPlanetTitles[5]="My points";
+        mPlanetTitles[5]="shopping Amount";
 
 
 
@@ -302,15 +303,27 @@ public class AllMenu extends android.support.v4.app.FragmentActivity implements 
                     if (beacons.get(0).getMinor()==MINOR_FROM_BEACON_ONE){
 
                         //tasks do to
+                        if (PremiumUser==true) {
 
-                        home_ImageView.setImageResource(R.drawable.suit);
-                        home_TextView.setText("Armani custom suit \n" +
-                                        "Style: Italian Milanese\n" +
-                                        "Designer: Giorgio Armani\n" +
-                                        "Fabric: Linen\n" +
-                                        "Pattern: Pinstripe\n" +
-                                        "Price: 150,000/= Kshs"
-                        );
+                            home_ImageView.setImageResource(R.drawable.suit);
+                            home_TextView.setText("Armani custom suit \n" +
+                                            "Style: Italian Milanese\n" +
+                                            "Designer: Giorgio Armani\n" +
+                                            "Fabric: Linen\n" +
+                                            "Pattern: Pinstripe\n" +
+                                            "Price: 150,000/= Kshs"
+                            );
+                        }
+                        else {
+                            home_ImageView.setImageResource(R.drawable.sir_henries_regular);
+                            home_TextView.setText("Sir Henry's custom suit \n" +
+                                            "Style: American \n" +
+
+                                            "Fabric: \n" +
+                                            "Origin: RPC\n" +
+                                            "Price: 15,000/= Kshs"
+                            );
+                        }
                         if (SearchQuery.equalsIgnoreCase("Suits")|| SearchQuery.equalsIgnoreCase("Jackets" )) {
                             Toast.makeText(getApplicationContext(),"The Item " + SearchQuery + " you had searched is Near your current vicinity", Toast.LENGTH_SHORT).show();
                             Log.d(TAG,"Adding  "+SearchQuery);
@@ -329,9 +342,18 @@ public class AllMenu extends android.support.v4.app.FragmentActivity implements 
                     else {
                         if (beacons.get(0).getMinor() == MINOR_FROM_BEACON_TWO) {
                             //tasks do to
-                            home_ImageView.setImageResource(R.drawable.handbag_shoes);
-                            home_TextView.setText(String.format("You are Approximately  %.2f", Utils.computeAccuracy(beacons.get(0))) + "Meters From this Item");
+                            if (PremiumUser==true) {
+                                home_ImageView.setImageResource(R.drawable.premium_handbag);
+                                home_TextView.setText(String.format("You are Approximately  %.2f", Utils.computeAccuracy(beacons.get(0))) + "Meters From this Item\n"+
 
+                                        "Style:  leather\n" +
+
+                                                "color variants available: blue,white and black\n");
+                            }
+                            else{
+                                home_ImageView.setImageResource(R.drawable.handbag_shoes);
+                                home_TextView.setText(String.format("You are Approximately  %.2f", Utils.computeAccuracy(beacons.get(0))) + "Meters From this Item");
+                            }
                             if (SearchQuery.equalsIgnoreCase("Ties")||SearchQuery.equalsIgnoreCase("Dresses")||SearchQuery.equalsIgnoreCase("Shoes")) {
                                 Toast.makeText(getBaseContext(),"The Item " + SearchQuery + " you had searched is Near your current vicinity", Toast.LENGTH_LONG).show();
                                 SearchQuery=null;
@@ -387,46 +409,47 @@ public class AllMenu extends android.support.v4.app.FragmentActivity implements 
 
             }
         });
+
+
+        //ESTIMOTE
         //MONITORING THE REGION THE USER IS IN
         beaconManager.setMonitoringListener(new BeaconManager.MonitoringListener() {
-            @Override
-            public void onEnteredRegion(final Region region, final List<Beacon> beacons) {
-               if (Region_Already_Entered==false) {
-
-                   postNotification("Welcome to the My Shopping Mate where design meets style");
+                                                @Override
+                                                public void onEnteredRegion(final Region region, final List<Beacon> beacons) {
+                                                    if (Region_Already_Entered==false) {
+                                                        LoginTime=getCurrentTimeStamp();
+                                                        new PostDataAsyncTask().execute();
+                                                        postNotification("Welcome to the My Shopping Mate where design meets style");
                /*we are going to use asynctask to prevent network on main thread exception while sending music likes to music.myshoppingmate.com/post.php
                *when a user enters a region around the shop his data is posted and added to the database ,email,time of visit and Music likes
                *
                */
-                   new PostDataAsyncTask().execute();
-                   Region_Already_Entered=true;
 
-               }
-                else{
-                   //dont post notification if the user has already entered the region
-               }
+                                                        Region_Already_Entered=true;
 
-
-
-            }
+                                                    }
+                                                    else{
+                                                        //dont post notification if the user has already entered the region
+                                                    }
 
 
+
+                                                }
 
 
 
 
 
-            @Override
-            public void onExitedRegion (Region region){
 
-                postNotification(" Thanks for shopping with us ");
-            }
-        }
+
+                                                @Override
+                                                public void onExitedRegion (Region region){
+
+                                                    postNotification(" Thanks for shopping with us ");
+                                                }
+                                            }
 
         );
-
-        //ESTIMOTE
-
 
 
 
@@ -778,28 +801,30 @@ Log.e("Date","couldn't retrieve date" + e);
 
 
     }
-//POSTING NOTIFICATION
-private void postNotification(String msg) {
-    Intent notifyIntent = new Intent(AllMenu.this, AllMenu.class);
-    notifyIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-    PendingIntent pendingIntent = PendingIntent.getActivities(
-            AllMenu.this,
-            0,
-            new Intent[]{notifyIntent},
-            PendingIntent.FLAG_UPDATE_CURRENT);
-    Notification notification = new Notification.Builder(AllMenu.this)
-            .setSmallIcon(R.drawable.ic_launcher)
-            .setContentTitle("My Shopping Mate")
-            .setContentText(msg)
-            .setAutoCancel(true)
-            .setContentIntent(pendingIntent)
-            .build();
-    notification.defaults |= Notification.DEFAULT_SOUND;
-    notification.defaults |= Notification.DEFAULT_LIGHTS;
-    notificationManager.notify(NOTIFICATION_ID, notification);
+    //POSTING NOTIFICATION
+    private void postNotification(String msg) {
+        Intent notifyIntent = new Intent(AllMenu.this, AllMenu.class);
+        notifyIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivities(
+                AllMenu.this,
+                0,
+                new Intent[]{notifyIntent},
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        Notification notification = new Notification.Builder(AllMenu.this)
+                .setSmallIcon(R.drawable.ic_launcher)
+                .setContentTitle("My Shopping Mate")
+                .setContentText(msg)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
+                .build();
+        notification.defaults |= Notification.DEFAULT_SOUND;
+        notification.defaults |= Notification.DEFAULT_LIGHTS;
+        notificationManager.notify(NOTIFICATION_ID, notification);
 
 
-}
+    }
+
+
     protected void onStop() {
         super.onStop();
         try {
@@ -905,7 +930,10 @@ private void postNotification(String msg) {
         try{
             String UserType="Unknown";
             if(PremiumUser==false){
-                UserType="Reqular";
+                UserType="Regular";
+            }
+            else{
+                UserType="Premium";
             }
 
             // url where the data will be posted this data will be stored in a database
@@ -1025,34 +1053,43 @@ private void postNotification(String msg) {
     //speak to a specialist
     public void AddToCart(View view) {
         View addToCart;
-        ListView list;
 
-try {
-    list=(ListView)findViewById(R.id.list);
+        addToCart= Offers.list.getAdapter().getView(3,null,Offers.list);
+        Cart.cartListView.addFooterView(addToCart);
+        Toast.makeText(getBaseContext(),"addded",Toast.LENGTH_SHORT).show();
+        ShoppingAmount+=10000;
+        AllMenu.mPlanetTitles[4]= "Cart Items: "+String.valueOf( Cart.cartListView.getCount()-1);
 
-    if (ClosestBeacon != null) {
+      if (ClosestBeacon != null) {
         if (ClosestBeacon.getMinor() == MINOR_FROM_BEACON_ONE) {
             addToCart= Offers.list.getAdapter().getView(1,null,Offers.list);
             Cart.cartListView.addFooterView(addToCart);
+            Toast.makeText(getBaseContext(),"addded",Toast.LENGTH_SHORT).show();
             AllMenu.mPlanetTitles[4]= "Cart Items: "+String.valueOf( Cart.cartListView.getCount()-1);
+            AllMenu.mPlanetTitles[5]="Cart Items Amount:"+String.valueOf(AllMenu.ShoppingAmount);
+            ShoppingAmount+=5000;
 
 
         } else if (ClosestBeacon.getMinor() == MINOR_FROM_BEACON_TWO) {
-            addToCart= list.getAdapter().getView(3,null,list);
+            addToCart= Offers.list.getAdapter().getView(3,null,Offers.list);
             Cart.cartListView.addFooterView(addToCart);
             AllMenu.mPlanetTitles[4]= "Cart Items: "+String.valueOf( Cart.cartListView.getCount()-1);
+            ShoppingAmount+=150000;
+            AllMenu.mPlanetTitles[5]="Cart Items Amount:"+String.valueOf(AllMenu.ShoppingAmount);
 
         } else {
             addToCart= Offers.list.getAdapter().getView(3,null,Offers.list);
             Cart.cartListView.addFooterView(addToCart);
+            Toast.makeText(getBaseContext(),"addded",Toast.LENGTH_SHORT).show();
             AllMenu.mPlanetTitles[4]= "Cart Items: "+String.valueOf( Cart.cartListView.getCount()-1);
+            ShoppingAmount+=15000;
+            AllMenu.mPlanetTitles[5]="Cart Items Amount:"+String.valueOf(AllMenu.ShoppingAmount);
 
 
         }
     }
-}catch (Exception e){
-    Log.d(TAG,"couldnt add to cart");
-}
+
+
 
     }
     //send Message sms
